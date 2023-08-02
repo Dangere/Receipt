@@ -6,7 +6,7 @@ A new Flutter project.
 
 This project is a starting point for a Flutter application.
 
-This project uses [RiverPod] for State Management. (https://riverpod.dev/)
+This project uses [RiverPod](https://riverpod.dev/) for State Management.
 
 <!-- A few resources to get you started if this is your first Flutter project:
 
