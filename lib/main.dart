@@ -4,12 +4,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shoppingapp/pages/items_record_page.dart';
 import 'package:shoppingapp/pages/splash_screen.dart';
-import 'package:sliding_up_panel2/sliding_up_panel2.dart';
-// import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'components/header.dart';
 import 'pages/stock_page.dart';
 import 'pages/receipts_page.dart';
-import 'panels/create_item_panel.dart';
 import 'providers.dart';
 
 void main() {
@@ -24,9 +21,8 @@ class MyApp extends ConsumerWidget {
     final PageController pageController = PageController(initialPage: 0);
 
     final bool onSplashScreen = ref.watch(onSplashScreenProvider); //refreshes once
-    final bool isSlideUpPanelOpen = ref.watch(isSlideUpPanelOpenProvider);
+    // final bool isSlideUpPanelOpen = ref.watch(isSlideUpPanelOpenProvider);
     final SelectedLanguage selectedLang = ref.watch(selectedLanguageProvider);
-    final PanelController panelController = ref.watch(slidePanelControllerProvider);
 
     final List<Widget> pages = [
       Stack(
@@ -36,7 +32,6 @@ class MyApp extends ConsumerWidget {
     ];
 
     void closePanel() {
-      panelController.close();
       ref.read(isSlideUpPanelOpenProvider.notifier).state = false;
       ref.read(freezeAppBarProvider.notifier).state = false;
     }
@@ -72,32 +67,19 @@ class MyApp extends ConsumerWidget {
             children: [
               if (!onSplashScreen) Header(pageController: pageController),
               Expanded(
-                child: SlidingUpPanel(
-                  controller: panelController,
-                  body: PageView(
-                    controller: pageController,
-                    onPageChanged: (value) => ref.read(pageIndexProvider.notifier).state = value,
-                    children: pages,
-                  ),
-                  // panel: CreateItem(closePanel: closePanel),
-
-                  panelBuilder: () {
-                    return CreateItem(
-                      closePanel: closePanel,
-                    );
-                  },
-                  isDraggable: false,
-                  minHeight: 0,
-                  parallaxEnabled: false,
+                child: PageView(
+                  onPageChanged: (value) => ref.read(pageIndexProvider.notifier).state = value,
+                  controller: pageController,
+                  children: pages,
                 ),
               )
             ],
           ),
           drawerEnableOpenDragGesture: false,
           drawer: SideDrawer(selectedLang: selectedLang, pageController: pageController),
-          floatingActionButton: Visibility(
-              visible: !onSplashScreen,
-              child: OpenPanelButton(slideUpPanelIsOpen: isSlideUpPanelOpen)),
+          // floatingActionButton: Visibility(
+          //     visible: !onSplashScreen,
+          //     child: OpenPanelButton(slideUpPanelIsOpen: isSlideUpPanelOpen)),
         ),
       ),
     );
@@ -131,11 +113,6 @@ class SideDrawer extends ConsumerWidget {
               leading: const Icon(Icons.data_array_rounded),
               title: Text(selectedLang == SelectedLanguage.arabic ? 'سجل البضاعة' : 'Items record'),
               onTap: () {
-                // pageController.animateToPage(
-                //   2,
-                //   duration: const Duration(milliseconds: 500),
-                //   curve: Curves.ease,
-                // );
                 Navigator.push(
                     context, MaterialPageRoute(builder: (context) => const RecordPage()));
                 Scaffold.of(context).closeDrawer();
@@ -175,7 +152,6 @@ class OpenPanelButton extends StatelessWidget {
       offset: !slideUpPanelIsOpen ? Offset.zero : const Offset(0, 2),
       child: Consumer(
         builder: (BuildContext context, WidgetRef ref, Widget? child) {
-          PanelController panelController = ref.read(slidePanelControllerProvider);
           int pageIndex = ref.watch(pageIndexProvider);
 
           return Container(
@@ -187,7 +163,6 @@ class OpenPanelButton extends StatelessWidget {
             child: TextButton(
               onPressed: () {
                 ref.read(freezeAppBarProvider.notifier).state = true;
-                panelController.open();
                 ref.read(isSlideUpPanelOpenProvider.notifier).state = true;
               },
               child: Text(

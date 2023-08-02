@@ -1,9 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:sliding_up_panel2/sliding_up_panel2.dart';
-// import 'package:sliding_up_panel/sliding_up_panel.dart';
 
-final slidePanelControllerProvider = StateProvider<PanelController>((ref) => PanelController());
+// final slidePanelControllerProvider = StateProvider<PanelController>((ref) => PanelController());
 
 final isSlideUpPanelOpenProvider = StateProvider<bool>((ref) => false);
 
