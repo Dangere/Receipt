@@ -1,11 +1,11 @@
 # Receipt
 
-A new Flutter project.
+### About
+This is a inventory management app that allows the user to store and sell items by creating receipts for customers with the support of installments over time. 
 
-## Getting Started
+<!-- This project is a starting point for a Flutter application. -->
 
-This project is a starting point for a Flutter application.
-
+### Technologies
 This project uses [RiverPod](https://riverpod.dev/) for State Management.
 
 <!-- A few resources to get you started if this is your first Flutter project:
