@@ -54,13 +54,16 @@ class ReceiptPanel extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             softWrap: false,
-                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
                           ),
                           const SizedBox(
                             height: 5,
                           ),
-                          Text("Purchased Items: ${receipt.broughtItems.length}",
-                              style: const TextStyle(fontSize: 14, color: Colors.black45)),
+                          Text(
+                              "Purchased Items: ${receipt.broughtItems.length}",
+                              style: const TextStyle(
+                                  fontSize: 14, color: Colors.black45)),
                         ],
                       ),
                     ),
@@ -76,13 +79,20 @@ class ReceiptPanel extends StatelessWidget {
                                 text: TextSpan(
                                     text: "Paid ",
                                     style: TextStyle(
-                                        color: Theme.of(context).colorScheme.primary, fontSize: 15),
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .primary,
+                                        fontSize: 15),
                                     children: const [
                                   TextSpan(
-                                      text: '400\n', style: TextStyle(fontWeight: FontWeight.w600)),
+                                      text: '400\n',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600)),
                                   TextSpan(text: "Of "),
                                   TextSpan(
-                                      text: "1000", style: TextStyle(fontWeight: FontWeight.w600))
+                                      text: "1000",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600))
                                 ])),
                           ],
                         ),

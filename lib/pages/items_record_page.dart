@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shoppingapp/components/item_display_list.dart';
 
-import '../components/item_panel.dart';
 import '../models.dart';
 import '../providers.dart';
 
@@ -12,7 +12,8 @@ class RecordPage extends StatefulWidget {
   State<RecordPage> createState() => _RecordPageState();
 }
 
-class _RecordPageState extends State<RecordPage> with AutomaticKeepAliveClientMixin {
+class _RecordPageState extends State<RecordPage>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
@@ -77,7 +78,8 @@ class RecordHeader extends ConsumerWidget {
               ),
               Text(
                 title,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               //this is a temporary solution
               IconButton(
@@ -105,36 +107,6 @@ class RecordPanelList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: (itemList.length / 2).round(),
-      itemBuilder: (BuildContext context, int index) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10.0) +
-              const EdgeInsets.symmetric(vertical: 5),
-          child: SizedBox(
-            height: 270,
-            child: Row(children: [
-              Expanded(
-                child: ItemPanel(
-                  item: itemList[(index * 2)],
-                  displayQuantity: false,
-                ),
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                child: itemList.asMap().containsKey((index * 2) + 1)
-                    ? ItemPanel(
-                        item: itemList[(index * 2) + 1],
-                        displayQuantity: false,
-                      )
-                    : Container(),
-              )
-            ]),
-          ),
-        );
-      },
-    );
+    return ItemsList(list: itemList, columnHeight: 270);
   }
 }

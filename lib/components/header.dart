@@ -26,7 +26,8 @@ class Header extends ConsumerWidget {
       case 0:
         title = selectedLang == SelectedLanguage.arabic ? "مخزون" : "Stock";
       case 1:
-        title = selectedLang == SelectedLanguage.arabic ? "إيصالات" : "Receipts";
+        title =
+            selectedLang == SelectedLanguage.arabic ? "إيصالات" : "Receipts";
       case 2:
         title = selectedLang == SelectedLanguage.arabic ? "سجل" : "Record";
 
@@ -56,7 +57,8 @@ class Header extends ConsumerWidget {
               ),
               Text(
                 title,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style:
+                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               //this is a temporary solution
               IconButton(
@@ -77,8 +79,9 @@ class Header extends ConsumerWidget {
                     ),
                     icon: Icon(Icons.store_mall_directory_rounded,
                         size: 30,
-                        color:
-                            pageIndex == 0 ? Theme.of(context).colorScheme.primary : Colors.grey),
+                        color: pageIndex == 0
+                            ? Theme.of(context).colorScheme.primary
+                            : Colors.grey),
                   ),
                   IconButton(
                     onPressed: () => pageController.animateToPage(
@@ -88,8 +91,9 @@ class Header extends ConsumerWidget {
                     ),
                     icon: Icon(Icons.receipt,
                         size: 30,
-                        color:
-                            pageIndex == 1 ? Theme.of(context).colorScheme.primary : Colors.grey),
+                        color: pageIndex == 1
+                            ? Theme.of(context).colorScheme.primary
+                            : Colors.grey),
                   ),
                 ],
               ),

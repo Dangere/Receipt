@@ -25,7 +25,7 @@ class ItemPanel extends StatelessWidget {
       ),
       child: Column(
         // mainAxisSize: MainAxisSize.max,
-        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Padding(
             padding: const EdgeInsets.all(10.0),

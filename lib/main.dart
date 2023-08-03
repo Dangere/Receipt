@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shoppingapp/pages/items_record_page.dart';
-import 'package:shoppingapp/pages/splash_screen.dart';
+
 import 'components/header.dart';
+import 'pages/items_record_page.dart';
+import 'pages/splash_screen.dart';
 import 'pages/stock_page.dart';
 import 'pages/receipts_page.dart';
 import 'providers.dart';
