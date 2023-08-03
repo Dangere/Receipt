@@ -20,14 +20,16 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final PageController pageController = PageController(initialPage: 0);
 
-    final bool onSplashScreen = ref.watch(onSplashScreenProvider); //refreshes once
+    final bool onSplashScreen =
+        ref.watch(onSplashScreenProvider); //refreshes once
     // final bool isSlideUpPanelOpen = ref.watch(isSlideUpPanelOpenProvider);
     final SelectedLanguage selectedLang = ref.watch(selectedLanguageProvider);
 
     final List<Widget> pages = [
-      Stack(
-        children: [const StockPage(), if (onSplashScreen) const SplashScreen()],
-      ),
+      // Stack(
+      //   children: [const StockPage(), if (onSplashScreen) const SplashScreen()],
+      // ),
+      onSplashScreen ? const SplashScreen() : const StockPage(),
       const ReceiptsPage()
     ];
 
@@ -56,7 +58,8 @@ class MyApp extends ConsumerWidget {
         primarySwatch: mainColors,
         appBarTheme: const AppBarTheme(
           color: Colors.blue,
-          systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.blue), // 2
+          systemOverlayStyle:
+              SystemUiOverlayStyle(statusBarColor: Colors.blue), // 2
         ),
       ),
       debugShowCheckedModeBanner: false,
@@ -68,7 +71,10 @@ class MyApp extends ConsumerWidget {
               if (!onSplashScreen) Header(pageController: pageController),
               Expanded(
                 child: PageView(
-                  onPageChanged: (value) => ref.read(pageIndexProvider.notifier).state = value,
+                  onPageChanged: (value) => ref
+                      .read(pageIndexProvider.notifier)
+                      .update((state) => value),
+                  //instead of using .state = value. I used update((state) => value)
                   controller: pageController,
                   children: pages,
                 ),
@@ -76,7 +82,8 @@ class MyApp extends ConsumerWidget {
             ],
           ),
           drawerEnableOpenDragGesture: false,
-          drawer: SideDrawer(selectedLang: selectedLang, pageController: pageController),
+          drawer: SideDrawer(
+              selectedLang: selectedLang, pageController: pageController),
           // floatingActionButton: Visibility(
           //     visible: !onSplashScreen,
           //     child: OpenPanelButton(slideUpPanelIsOpen: isSlideUpPanelOpen)),
@@ -111,10 +118,14 @@ class SideDrawer extends ConsumerWidget {
           Builder(builder: (context) {
             return ListTile(
               leading: const Icon(Icons.data_array_rounded),
-              title: Text(selectedLang == SelectedLanguage.arabic ? 'سجل البضاعة' : 'Items record'),
+              title: Text(selectedLang == SelectedLanguage.arabic
+                  ? 'سجل البضاعة'
+                  : 'Items record'),
               onTap: () {
                 Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => const RecordPage()));
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const RecordPage()));
                 Scaffold.of(context).closeDrawer();
               },
             );
@@ -122,8 +133,9 @@ class SideDrawer extends ConsumerWidget {
           Builder(builder: (context) {
             return ListTile(
               leading: const Icon(Icons.add_to_home_screen_rounded),
-              title:
-                  Text(selectedLang == SelectedLanguage.arabic ? 'شاشة البداية' : 'Splash Screen'),
+              title: Text(selectedLang == SelectedLanguage.arabic
+                  ? 'شاشة البداية'
+                  : 'Splash Screen'),
               onTap: () {
                 ref.read(onSplashScreenProvider.notifier).state = true;
                 pageController.jumpToPage(0);
@@ -155,7 +167,8 @@ class OpenPanelButton extends StatelessWidget {
           int pageIndex = ref.watch(pageIndexProvider);
 
           return Container(
-            padding: const EdgeInsets.all(12) + const EdgeInsets.symmetric(horizontal: 12),
+            padding: const EdgeInsets.all(12) +
+                const EdgeInsets.symmetric(horizontal: 12),
             decoration: BoxDecoration(
               color: const Color.fromARGB(255, 20, 16, 26),
               borderRadius: BorderRadius.circular(12),
@@ -196,7 +209,8 @@ class UserDrawer extends StatelessWidget {
         SizedBox(
             height: 80,
             width: 80,
-            child: ClipOval(child: Image.asset("assets/images/PortraitPlaceholder.jpg"))),
+            child: ClipOval(
+                child: Image.asset("assets/images/PortraitPlaceholder.jpg"))),
 
         const SizedBox(
           height: 10,
