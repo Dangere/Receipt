@@ -1,0 +1,50 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shoppingapp/components/slide_up_panel.dart';
+import 'package:shoppingapp/panels/create_receipt_panel.dart';
+import '../components/receipt_card.dart';
+import '../models.dart';
+import '../providers.dart';
+
+class ReceiptsTab extends StatefulWidget {
+  const ReceiptsTab({super.key});
+
+  @override
+  State<ReceiptsTab> createState() => _ReceiptsTabState();
+}
+
+class _ReceiptsTabState extends State<ReceiptsTab>
+    with AutomaticKeepAliveClientMixin {
+  List<Receipt> receipts = List.generate(
+      10,
+      (index) => Receipt(
+          customerName: "Customer Name",
+          broughtItems: [],
+          creationDate: "2023/08/23"));
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
+    return Consumer(builder: (context, ref, child) {
+      final bool isPanelOpen = ref.watch(openPanelProvider);
+
+      return SlideUpPanel(
+        body: ListView.builder(
+          itemCount: receipts.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ReceiptCard(
+              receipt: receipts[index],
+            );
+          },
+        ),
+        panel: CreateReceiptPanel(),
+        duration: Duration(seconds: 1),
+        isOpen: isPanelOpen,
+      );
+    });
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+}

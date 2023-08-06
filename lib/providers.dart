@@ -1,16 +1,15 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-// final slidePanelControllerProvider = StateProvider<PanelController>((ref) => PanelController());
+final openPanelProvider = StateProvider<bool>((ref) => false);
 
-final isSlideUpPanelOpenProvider = StateProvider<bool>((ref) => false);
-
-final pageIndexProvider = StateProvider<int>((ref) => 0);
+final tabIndexProvider = StateProvider<int>((ref) => 0);
 
 final freezeAppBarProvider = StateProvider<bool>((ref) => false);
 
 final onSplashScreenProvider = StateProvider<bool>((ref) => true);
 
-final selectedLanguageProvider = StateProvider<SelectedLanguage>((ref) => SelectedLanguage.english);
+final selectedLanguageProvider =
+    StateProvider<SelectedLanguage>((ref) => SelectedLanguage.english);
 
 enum SelectedLanguage { arabic, english }
 

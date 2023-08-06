@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../models.dart';
 
-class ItemPanel extends StatelessWidget {
-  const ItemPanel(
+class ItemCard extends StatelessWidget {
+  const ItemCard(
       {super.key, required this.item, required this.displayQuantity});
 
   final Item item;

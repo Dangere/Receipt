@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../models.dart';
 
-class ReceiptPanel extends StatelessWidget {
-  const ReceiptPanel({super.key, required this.receipt});
+class ReceiptCard extends StatelessWidget {
+  const ReceiptCard({super.key, required this.receipt});
   final Receipt receipt;
 
   @override

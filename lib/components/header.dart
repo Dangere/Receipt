@@ -17,7 +17,7 @@ class Header extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final selectedLang = ref.watch(selectedLanguageProvider);
-    final int pageIndex = ref.watch(pageIndexProvider);
+    final int pageIndex = ref.watch(tabIndexProvider);
     final bool freezeAppBar = ref.watch(freezeAppBarProvider);
 
     String title;

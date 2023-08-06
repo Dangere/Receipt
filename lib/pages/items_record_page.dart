@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shoppingapp/components/item_display_list.dart';
+import 'package:shoppingapp/components/items_display_list.dart';
 
 import '../models.dart';
 import '../providers.dart';

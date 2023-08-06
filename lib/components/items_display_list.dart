@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shoppingapp/models.dart';
 
-import 'item_panel.dart';
+import 'item_card.dart';
 
 class ItemsList extends StatelessWidget {
   const ItemsList({super.key, required this.list, required this.columnHeight});
@@ -21,7 +21,7 @@ class ItemsList extends StatelessWidget {
           height: columnHeight,
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 5),
-            child: ItemPanel(
+            child: ItemCard(
               item: list[index],
               displayQuantity: true,
             ),

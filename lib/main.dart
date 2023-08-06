@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'components/header.dart';
 import 'pages/items_record_page.dart';
 import 'pages/splash_screen.dart';
-import 'pages/stock_page.dart';
-import 'pages/receipts_page.dart';
+import 'pages/stock_tab.dart';
+import 'pages/receipts_tab.dart';
 import 'providers.dart';
 
 void main() {
@@ -23,40 +23,30 @@ class MyApp extends ConsumerWidget {
 
     final bool onSplashScreen =
         ref.watch(onSplashScreenProvider); //refreshes once
-    // final bool isSlideUpPanelOpen = ref.watch(isSlideUpPanelOpenProvider);
     final SelectedLanguage selectedLang = ref.watch(selectedLanguageProvider);
 
-    final List<Widget> pages = [
-      // Stack(
-      //   children: [const StockPage(), if (onSplashScreen) const SplashScreen()],
-      // ),
-      onSplashScreen ? const SplashScreen() : const StockPage(),
-      const ReceiptsPage()
+    final List<Widget> tabs = [
+      onSplashScreen ? const SplashScreen() : const StockTab(),
+      const ReceiptsTab()
     ];
 
-    void closePanel() {
-      ref.read(isSlideUpPanelOpenProvider.notifier).state = false;
-      ref.read(freezeAppBarProvider.notifier).state = false;
-    }
-
     Color darkAccent = const Color(0xff2E3039);
-    var mainColors = MaterialColor(darkAccent.value, <int, Color>{
-      50: darkAccent.withOpacity(0.1),
-      100: darkAccent.withOpacity(0.2),
-      200: darkAccent.withOpacity(0.3),
-      300: darkAccent.withOpacity(0.4),
-      400: darkAccent.withOpacity(0.5),
-      500: darkAccent.withOpacity(0.6),
-      600: darkAccent.withOpacity(0.7),
-      700: darkAccent.withOpacity(0.8),
-      800: darkAccent.withOpacity(0.9),
-      900: darkAccent.withOpacity(1.0),
-    });
 
     return MaterialApp(
       theme: ThemeData(
         textTheme: GoogleFonts.readexProTextTheme(),
-        primarySwatch: mainColors,
+        primarySwatch: MaterialColor(darkAccent.value, <int, Color>{
+          50: darkAccent.withOpacity(0.1),
+          100: darkAccent.withOpacity(0.2),
+          200: darkAccent.withOpacity(0.3),
+          300: darkAccent.withOpacity(0.4),
+          400: darkAccent.withOpacity(0.5),
+          500: darkAccent.withOpacity(0.6),
+          600: darkAccent.withOpacity(0.7),
+          700: darkAccent.withOpacity(0.8),
+          800: darkAccent.withOpacity(0.9),
+          900: darkAccent.withOpacity(1.0),
+        }),
         appBarTheme: const AppBarTheme(
           color: Colors.blue,
           systemOverlayStyle:
@@ -73,21 +63,22 @@ class MyApp extends ConsumerWidget {
               Expanded(
                 child: PageView(
                   onPageChanged: (value) => ref
-                      .read(pageIndexProvider.notifier)
+                      .read(tabIndexProvider.notifier)
                       .update((state) => value),
                   //instead of using .state = value. I used update((state) => value)
                   controller: pageController,
-                  children: pages,
+                  children: tabs,
                 ),
-              )
+              ),
             ],
           ),
           drawerEnableOpenDragGesture: false,
           drawer: SideDrawer(
               selectedLang: selectedLang, pageController: pageController),
-          // floatingActionButton: Visibility(
-          //     visible: !onSplashScreen,
-          //     child: OpenPanelButton(slideUpPanelIsOpen: isSlideUpPanelOpen)),
+          floatingActionButton: Visibility(
+            visible: !onSplashScreen,
+            child: OpenPanelButton(),
+          ),
         ),
       ),
     );
@@ -150,46 +141,40 @@ class SideDrawer extends ConsumerWidget {
   }
 }
 
-class OpenPanelButton extends StatelessWidget {
-  const OpenPanelButton({
-    super.key,
-    required this.slideUpPanelIsOpen,
-  });
+class OpenPanelButton extends ConsumerWidget {
+  const OpenPanelButton({super.key});
 
-  final bool slideUpPanelIsOpen;
+  // final bool slideUpPanelIsOpen;
+  // final PanelController panelController;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    final int tabIndex = ref.watch(tabIndexProvider);
+    final bool isPanelOpen = ref.watch(openPanelProvider);
     return AnimatedSlide(
       duration: const Duration(milliseconds: 300),
-      offset: !slideUpPanelIsOpen ? Offset.zero : const Offset(0, 2),
-      child: Consumer(
-        builder: (BuildContext context, WidgetRef ref, Widget? child) {
-          int pageIndex = ref.watch(pageIndexProvider);
-
-          return Container(
-            padding: const EdgeInsets.all(12) +
-                const EdgeInsets.symmetric(horizontal: 12),
-            decoration: BoxDecoration(
-              color: const Color.fromARGB(255, 20, 16, 26),
-              borderRadius: BorderRadius.circular(12),
+      offset: !isPanelOpen ? Offset.zero : const Offset(0, 2),
+      child: Container(
+        padding: const EdgeInsets.all(12) +
+            const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 20, 16, 26),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: TextButton(
+          onPressed: () {
+            ref.read(freezeAppBarProvider.notifier).state = true;
+            ref.read(openPanelProvider.notifier).state = true;
+          },
+          child: Text(
+            tabIndex == 0 ? "Create Item" : "Create Receipt",
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w300,
+              fontSize: 18,
             ),
-            child: TextButton(
-              onPressed: () {
-                ref.read(freezeAppBarProvider.notifier).state = true;
-                ref.read(isSlideUpPanelOpenProvider.notifier).state = true;
-              },
-              child: Text(
-                pageIndex == 0 ? "Create Item" : "Create Receipt",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.w300,
-                  fontSize: 18,
-                ),
-              ),
-            ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
