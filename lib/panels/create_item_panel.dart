@@ -1,52 +1,133 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shoppingapp/models.dart';
 
 import '../providers.dart';
 
 class CreateItemPanel extends ConsumerWidget {
-  const CreateItemPanel({super.key});
+  const CreateItemPanel({super.key, required this.targetList});
+
+  final ProviderListenable<ItemListBaseNotifier> targetList;
 
   @override
   Widget build(BuildContext context, ref) {
+    final SelectedLanguage selectedLang = ref.watch(selectedLanguageProvider);
+    final bool onArabic = selectedLang == SelectedLanguage.arabic;
+
+    final String titleText = onArabic ? "إنشاء غرض" : "Create Item";
+    final String itemNameText = onArabic ? "اسم الغرض" : "Item Name";
+    final String idText = onArabic ? "رقم الغرض" : "Item ID";
+    final String broughtText = onArabic ? "سعر الشراء" : "Brought Price";
+    final String sellingText = onArabic ? "سعر البيع" : "Selling Price";
+    final String createItemText = onArabic ? "إنشاء" : "Create";
+
+    final TextEditingController itemNameController = TextEditingController(),
+        idController = TextEditingController(),
+        broughtPriceController = TextEditingController(),
+        sellingPriceController = TextEditingController();
+
+    void itemAlreadyExistAlert() {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => AlertDialog(
+          title: const Text('Alert'),
+          content: const Text('Item with this ID already exists'),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.pop(context, 'OK'),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+    }
+
     void closePanel() {
       ref.read(openPanelProvider.notifier).state = false;
       ref.read(freezeAppBarProvider.notifier).state = false;
+    }
+
+    void createItem() {
+      if (itemNameController.text.isEmpty ||
+          idController.text.isEmpty ||
+          broughtPriceController.text.isEmpty ||
+          sellingPriceController.text.isEmpty) return;
+
+      if (ref.read(targetList).itemExist(int.parse(idController.text))) {
+        itemAlreadyExistAlert();
+        return;
+      }
+
+      final item = Item(
+          name: itemNameController.text,
+          id: int.parse(idController.text),
+          broughtPrice: int.parse(broughtPriceController.text),
+          sellingPrice: int.parse(sellingPriceController.text),
+          quantity: 1,
+          photoPath: null);
+
+      ref.read(targetList).addItem(item);
+      closePanel();
     }
 
     return SizedBox(
       height: 500,
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20), color: Colors.grey[300]),
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.grey[300],
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 2,
+                blurRadius: 3,
+                offset: const Offset(0, -1)),
+          ],
+        ),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    IconButton(onPressed: closePanel, icon: const Icon(null)),
+                    Text(
+                      titleText,
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
                     IconButton(
                         onPressed: closePanel,
                         icon: const Icon(Icons.close, size: 30))
                   ],
                 ),
+                SizedBox(
+                  height: 1,
+                  width: 200,
+                  child: Container(
+                    color: Colors.grey[400],
+                  ),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
-                ClipRRect(
-                    borderRadius: BorderRadius.circular(20),
-                    child: SizedBox(
-                      height: 200,
-                      width: 300,
-                      child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.grey[200]),
-                        child: const Icon(Icons.image, size: 30),
-                      ),
-                    )),
+                Expanded(
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: SizedBox(
+                        // height: 200,
+                        width: 300,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.grey[200]),
+                          child:
+                              const Icon(Icons.add_a_photo_outlined, size: 30),
+                        ),
+                      )),
+                ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -60,13 +141,15 @@ class CreateItemPanel extends ConsumerWidget {
                           color: Colors.grey[100],
                           borderRadius: BorderRadius.circular(20),
                         ),
-                        child: const TextField(
-                            textAlign: TextAlign.center,
-                            decoration: InputDecoration(
-                              hintText: "Item Name",
-                              hintStyle: TextStyle(),
-                              border: InputBorder.none,
-                            )),
+                        child: TextField(
+                          controller: itemNameController,
+                          textAlign: TextAlign.center,
+                          decoration: InputDecoration(
+                            hintText: itemNameText,
+                            hintStyle: const TextStyle(),
+                            border: InputBorder.none,
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 30),
@@ -77,13 +160,14 @@ class CreateItemPanel extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: TextField(
+                          controller: idController,
                           inputFormatters: [
                             FilteringTextInputFormatter.digitsOnly,
                           ],
                           textAlign: TextAlign.center,
-                          decoration: const InputDecoration(
-                            hintText: "Item ID",
-                            hintStyle: TextStyle(),
+                          decoration: InputDecoration(
+                            hintText: idText,
+                            hintStyle: const TextStyle(),
                             border: InputBorder.none,
                           ),
                         ),
@@ -104,14 +188,16 @@ class CreateItemPanel extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: TextField(
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            textAlign: TextAlign.center,
-                            decoration: const InputDecoration(
-                                hintText: "Brought Price",
-                                hintStyle: TextStyle(),
-                                border: InputBorder.none)),
+                          controller: broughtPriceController,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          textAlign: TextAlign.center,
+                          decoration: InputDecoration(
+                              hintText: broughtText,
+                              hintStyle: const TextStyle(),
+                              border: InputBorder.none),
+                        ),
                       ),
                     ),
                     const SizedBox(width: 30),
@@ -122,14 +208,16 @@ class CreateItemPanel extends ConsumerWidget {
                           borderRadius: BorderRadius.circular(20),
                         ),
                         child: TextField(
-                            inputFormatters: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            textAlign: TextAlign.center,
-                            decoration: const InputDecoration(
-                                hintText: "Selling Price",
-                                hintStyle: TextStyle(),
-                                border: InputBorder.none)),
+                          controller: sellingPriceController,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
+                          textAlign: TextAlign.center,
+                          decoration: InputDecoration(
+                              hintText: sellingText,
+                              hintStyle: const TextStyle(),
+                              border: InputBorder.none),
+                        ),
                       ),
                     ),
                   ],
@@ -140,16 +228,16 @@ class CreateItemPanel extends ConsumerWidget {
                 Row(
                   children: [
                     TextButton(
-                      onPressed: () => print("create item"),
+                      onPressed: createItem,
                       child: Container(
                         padding: const EdgeInsets.all(12) +
                             const EdgeInsets.symmetric(horizontal: 12),
                         decoration: BoxDecoration(
                             color: const Color.fromARGB(255, 20, 16, 26),
                             borderRadius: BorderRadius.circular(12)),
-                        child: const Text(
-                          "Create",
-                          style: TextStyle(
+                        child: Text(
+                          createItemText,
+                          style: const TextStyle(
                               color: Colors.white, fontWeight: FontWeight.w300),
                         ),
                       ),

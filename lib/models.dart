@@ -4,7 +4,7 @@ class Item {
   int broughtPrice;
   int sellingPrice;
   int quantity;
-  String photoPath;
+  String? photoPath;
 
   Item(
       {required this.name,

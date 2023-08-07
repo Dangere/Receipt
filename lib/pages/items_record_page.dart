@@ -1,52 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shoppingapp/components/items_display_list.dart';
+import 'package:shoppingapp/components/slide_up_panel.dart';
+import 'package:shoppingapp/panels/create_item_panel.dart';
 
 import '../models.dart';
 import '../providers.dart';
 
-class RecordPage extends StatefulWidget {
+class RecordPage extends ConsumerWidget {
   const RecordPage({super.key});
 
   @override
-  State<RecordPage> createState() => _RecordPageState();
-}
+  Widget build(BuildContext context, ref) {
+    // List<Item> itemList = List.generate(
+    //     25,
+    //     (index) => Item(
+    //         name: "السلام عليكم $index",
+    //         id: 2000,
+    //         broughtPrice: 120,
+    //         sellingPrice: 200,
+    //         quantity: 1,
+    //         photoPath: "assets/images/8.PNG"));
 
-class _RecordPageState extends State<RecordPage>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-
-    List<Item> itemList = List.generate(
-        25,
-        (index) => Item(
-            name: "السلام عليكم $index",
-            id: 2000,
-            broughtPrice: 120,
-            sellingPrice: 200,
-            quantity: 1,
-            photoPath: "assets/images/8.PNG"));
+    final List<Item> itemList = ref.watch(recordItemList);
+    final bool isPanelOpen = ref.watch(openPanelProvider);
 
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.grey[350],
-        // appBar: AppBar(
-        //   title: Text("Record"),
-        //   backgroundColor: Colors.blueGrey[200],
-        // ),
         body: Column(
           children: [
             const RecordHeader(),
-            Expanded(child: RecordPanelList(itemList: itemList)),
+            Expanded(
+              child: SlideUpPanel(
+                body: ItemsList(
+                  list: itemList,
+                  columnHeight: 270,
+                  displayQuantity: false,
+                  freezeScroll: false,
+                ),
+                panel: CreateItemPanel(targetList: recordItemList.notifier),
+                duration: const Duration(milliseconds: 500),
+                isOpen: isPanelOpen,
+              ),
+            ),
           ],
         ),
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
 
 class RecordHeader extends ConsumerWidget {
@@ -74,7 +76,11 @@ class RecordHeader extends ConsumerWidget {
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               IconButton(
                 onPressed: () => Navigator.pop(context),
-                icon: const Icon(Icons.arrow_back_ios),
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  size: 30,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
               Text(
                 title,
@@ -83,8 +89,15 @@ class RecordHeader extends ConsumerWidget {
               ),
               //this is a temporary solution
               IconButton(
-                onPressed: () => "",
-                icon: const Icon(null),
+                onPressed: () {
+                  ref.read(freezeAppBarProvider.notifier).state = true;
+                  ref.read(openPanelProvider.notifier).state = true;
+                },
+                icon: Icon(
+                  Icons.add_box,
+                  size: 30,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
             ]),
             const SizedBox(
@@ -107,6 +120,11 @@ class RecordPanelList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ItemsList(list: itemList, columnHeight: 270);
+    return ItemsList(
+      list: itemList,
+      columnHeight: 270,
+      displayQuantity: false,
+      freezeScroll: false,
+    );
   }
 }

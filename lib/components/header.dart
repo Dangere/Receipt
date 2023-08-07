@@ -8,11 +8,9 @@ class Header extends ConsumerWidget {
   const Header({
     super.key,
     required this.pageController,
-    // required this.scaffoldDrawer,
   });
 
   final PageController pageController;
-  // final Drawer scaffoldDrawer;
 
   @override
   Widget build(BuildContext context, ref) {
@@ -53,17 +51,30 @@ class Header extends ConsumerWidget {
             Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
               IconButton(
                 onPressed: () => Scaffold.of(context).openDrawer(),
-                icon: const Icon(Icons.menu),
+                icon: Icon(
+                  Icons.menu,
+                  size: 30,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
               Text(
                 title,
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.primary),
               ),
               //this is a temporary solution
               IconButton(
-                onPressed: () => "",
-                icon: const Icon(null),
+                onPressed: () {
+                  ref.read(freezeAppBarProvider.notifier).state = true;
+                  ref.read(openPanelProvider.notifier).state = true;
+                },
+                icon: Icon(
+                  Icons.add_box,
+                  size: 30,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
               ),
             ]),
             Visibility(

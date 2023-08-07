@@ -20,9 +20,8 @@ class MyApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final PageController pageController = PageController(initialPage: 0);
+    final bool onSplashScreen = ref.watch(onSplashScreenProvider);
 
-    final bool onSplashScreen =
-        ref.watch(onSplashScreenProvider); //refreshes once
     final SelectedLanguage selectedLang = ref.watch(selectedLanguageProvider);
 
     final List<Widget> tabs = [
@@ -67,6 +66,7 @@ class MyApp extends ConsumerWidget {
                       .update((state) => value),
                   //instead of using .state = value. I used update((state) => value)
                   controller: pageController,
+                  physics: const NeverScrollableScrollPhysics(),
                   children: tabs,
                 ),
               ),
@@ -75,10 +75,10 @@ class MyApp extends ConsumerWidget {
           drawerEnableOpenDragGesture: false,
           drawer: SideDrawer(
               selectedLang: selectedLang, pageController: pageController),
-          floatingActionButton: Visibility(
-            visible: !onSplashScreen,
-            child: OpenPanelButton(),
-          ),
+          // floatingActionButton: Visibility(
+          //   visible: !onSplashScreen,
+          //   child: OpenPanelButton(),
+          // ),
         ),
       ),
     );
@@ -141,44 +141,44 @@ class SideDrawer extends ConsumerWidget {
   }
 }
 
-class OpenPanelButton extends ConsumerWidget {
-  const OpenPanelButton({super.key});
+// class OpenPanelButton extends ConsumerWidget {
+//   const OpenPanelButton({super.key});
 
-  // final bool slideUpPanelIsOpen;
-  // final PanelController panelController;
+//   // final bool slideUpPanelIsOpen;
+//   // final PanelController panelController;
 
-  @override
-  Widget build(BuildContext context, ref) {
-    final int tabIndex = ref.watch(tabIndexProvider);
-    final bool isPanelOpen = ref.watch(openPanelProvider);
-    return AnimatedSlide(
-      duration: const Duration(milliseconds: 300),
-      offset: !isPanelOpen ? Offset.zero : const Offset(0, 2),
-      child: Container(
-        padding: const EdgeInsets.all(12) +
-            const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: const Color.fromARGB(255, 20, 16, 26),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: TextButton(
-          onPressed: () {
-            ref.read(freezeAppBarProvider.notifier).state = true;
-            ref.read(openPanelProvider.notifier).state = true;
-          },
-          child: Text(
-            tabIndex == 0 ? "Create Item" : "Create Receipt",
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w300,
-              fontSize: 18,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context, ref) {
+//     final int tabIndex = ref.watch(tabIndexProvider);
+//     final bool isPanelOpen = ref.watch(openPanelProvider);
+//     return AnimatedSlide(
+//       duration: const Duration(milliseconds: 300),
+//       offset: !isPanelOpen ? Offset.zero : const Offset(0, 2),
+//       child: Container(
+//         padding: const EdgeInsets.all(12) +
+//             const EdgeInsets.symmetric(horizontal: 12),
+//         decoration: BoxDecoration(
+//           color: const Color.fromARGB(255, 20, 16, 26),
+//           borderRadius: BorderRadius.circular(12),
+//         ),
+//         child: TextButton(
+//           onPressed: () {
+//             ref.read(freezeAppBarProvider.notifier).state = true;
+//             ref.read(openPanelProvider.notifier).state = true;
+//           },
+//           child: Text(
+//             tabIndex == 0 ? "Create Item" : "Create Receipt",
+//             style: const TextStyle(
+//               color: Colors.white,
+//               fontWeight: FontWeight.w300,
+//               fontSize: 18,
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 class UserDrawer extends StatelessWidget {
   const UserDrawer({super.key});

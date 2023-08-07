@@ -31,6 +31,7 @@ class _ReceiptsTabState extends State<ReceiptsTab>
 
       return SlideUpPanel(
         body: ListView.builder(
+          physics: isPanelOpen ? const NeverScrollableScrollPhysics() : null,
           itemCount: receipts.length,
           itemBuilder: (BuildContext context, int index) {
             return ReceiptCard(
@@ -38,8 +39,8 @@ class _ReceiptsTabState extends State<ReceiptsTab>
             );
           },
         ),
-        panel: CreateReceiptPanel(),
-        duration: Duration(seconds: 1),
+        panel: const CreateReceiptPanel(),
+        duration: const Duration(milliseconds: 500),
         isOpen: isPanelOpen,
       );
     });

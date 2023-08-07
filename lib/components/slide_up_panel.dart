@@ -6,7 +6,7 @@ class SlideUpPanel extends StatefulWidget {
       required this.body,
       required this.panel,
       required this.isOpen,
-      required this.duration});
+      required this.duration,});
 
   final Widget body;
   final Widget panel;
@@ -25,7 +25,7 @@ class _SlideUpPanelState extends State<SlideUpPanel> {
       children: [
         widget.body,
         AnimatedSlide(
-          offset: widget.isOpen ? Offset.zero : Offset(0, 1),
+          offset: widget.isOpen ? Offset.zero : const Offset(0, 1),
           curve: Curves.ease,
           duration: widget.duration,
           child: widget.panel,

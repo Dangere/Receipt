@@ -29,9 +29,15 @@ class ItemCard extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(10.0),
-            child: ClipRRect(
+            child: SizedBox(
+              height: 100,
+              child: ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.asset(item.photoPath)),
+                child: item.photoPath == null
+                    ? const Placeholder()
+                    : Image.asset(item.photoPath!),
+              ),
+            ),
           ),
           Text(item.name,
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -51,8 +57,13 @@ class ItemCard extends StatelessWidget {
             ],
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text("#${item.id}",
+                    style: const TextStyle(color: Colors.grey)),
+              ),
               Container(
                 height: 40,
                 width: 40,

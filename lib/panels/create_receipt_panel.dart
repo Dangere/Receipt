@@ -18,7 +18,16 @@ class CreateReceiptPanel extends ConsumerWidget {
       height: 300,
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20), color: Colors.grey[300]),
+          borderRadius: BorderRadius.circular(20),
+          color: Colors.grey[300],
+          boxShadow: [
+            BoxShadow(
+                color: Colors.grey.withOpacity(0.5),
+                spreadRadius: 2,
+                blurRadius: 3,
+                offset: Offset(0, -1)),
+          ],
+        ),
         child: Center(
           child: Padding(
             padding: const EdgeInsets.all(15.0),
