@@ -38,12 +38,17 @@ class ItemListBaseNotifier extends StateNotifier<List<Item>> {
 
     state = list;
   }
+
+  List<Item> storedItems() {
+    return state;
+  }
 }
 
 final displayLanguageOptionsProvider = StateProvider<bool>((ref) => false);
 
-final stockItemList = StateNotifierProvider<StockItemListNotifier, List<Item>>(
-    (ref) => StockItemListNotifier());
+final stockItemListProvider =
+    StateNotifierProvider<StockItemListNotifier, List<Item>>(
+        (ref) => StockItemListNotifier());
 
 class StockItemListNotifier extends ItemListBaseNotifier {
   StockItemListNotifier() : super([]);
@@ -67,7 +72,7 @@ class StockItemListNotifier extends ItemListBaseNotifier {
   }
 }
 
-final recordItemList =
+final recordItemListProvider =
     StateNotifierProvider<RecordItemListNotifier, List<Item>>(
         (ref) => RecordItemListNotifier());
 

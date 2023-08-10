@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shoppingapp/components/dialog_panels.dart';
 
 import '../providers.dart';
 
@@ -18,7 +19,7 @@ class Header extends ConsumerWidget {
     final int pageIndex = ref.watch(tabIndexProvider);
     final bool freezeAppBar = ref.watch(freezeAppBarProvider);
 
-    String title;
+    final String title;
 
     switch (pageIndex) {
       case 0:
@@ -34,17 +35,32 @@ class Header extends ConsumerWidget {
         title = "";
     }
 
+    void addItemToStock() {
+      // ref.read(freezeAppBarProvider.notifier).state = true;
+      // ref.read(openPanelProvider.notifier).state = true;
+      addItemDialogPanel(
+          context: context,
+          createNew: () {
+            ref.read(freezeAppBarProvider.notifier).state = true;
+            ref.read(openPanelProvider.notifier).state = true;
+          },
+          pickItem: () {
+            transferItemDialogPanel(
+                context,
+                ref,
+                recordItemListProvider.notifier,
+                stockItemListProvider.notifier);
+          });
+    }
+
+    void addReceiptToReceipt() {}
+
     return AbsorbPointer(
       absorbing: freezeAppBar,
       child: Container(
-        // duration: Duration(seconds: 1),
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: Colors.blueGrey[200],
-          borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(30),
-            bottomRight: Radius.circular(30),
-          ),
+          color: Theme.of(context).colorScheme.primary,
         ),
         child: Column(
           children: [
@@ -54,7 +70,7 @@ class Header extends ConsumerWidget {
                 icon: Icon(
                   Icons.menu,
                   size: 30,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
               ),
               Text(
@@ -62,23 +78,20 @@ class Header extends ConsumerWidget {
                 style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary),
+                    color: Theme.of(context).colorScheme.onPrimary),
               ),
               //this is a temporary solution
               IconButton(
-                onPressed: () {
-                  ref.read(freezeAppBarProvider.notifier).state = true;
-                  ref.read(openPanelProvider.notifier).state = true;
-                },
+                onPressed: addItemToStock,
                 icon: Icon(
                   Icons.add_box,
                   size: 30,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).colorScheme.onPrimary,
                 ),
               ),
             ]),
-            Visibility(
-              visible: true,
+            SizedBox(
+              height: 40,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -91,7 +104,7 @@ class Header extends ConsumerWidget {
                     icon: Icon(Icons.store_mall_directory_rounded,
                         size: 30,
                         color: pageIndex == 0
-                            ? Theme.of(context).colorScheme.primary
+                            ? Theme.of(context).colorScheme.onPrimary
                             : Colors.grey),
                   ),
                   IconButton(
@@ -103,7 +116,7 @@ class Header extends ConsumerWidget {
                     icon: Icon(Icons.receipt,
                         size: 30,
                         color: pageIndex == 1
-                            ? Theme.of(context).colorScheme.primary
+                            ? Theme.of(context).colorScheme.onPrimary
                             : Colors.grey),
                   ),
                 ],

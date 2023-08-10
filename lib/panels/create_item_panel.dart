@@ -6,9 +6,9 @@ import 'package:shoppingapp/models.dart';
 import '../providers.dart';
 
 class CreateItemPanel extends ConsumerWidget {
-  const CreateItemPanel({super.key, required this.targetList});
+  const CreateItemPanel({super.key, required this.targetLists});
 
-  final ProviderListenable<ItemListBaseNotifier> targetList;
+  final List<ProviderListenable<ItemListBaseNotifier>> targetLists;
 
   @override
   Widget build(BuildContext context, ref) {
@@ -54,11 +54,12 @@ class CreateItemPanel extends ConsumerWidget {
           broughtPriceController.text.isEmpty ||
           sellingPriceController.text.isEmpty) return;
 
-      if (ref.read(targetList).itemExist(int.parse(idController.text))) {
-        itemAlreadyExistAlert();
-        return;
+      for (ProviderListenable<ItemListBaseNotifier> list in targetLists) {
+        if (ref.read(list).itemExist(int.parse(idController.text))) {
+          itemAlreadyExistAlert();
+          return;
+        }
       }
-
       final item = Item(
           name: itemNameController.text,
           id: int.parse(idController.text),
@@ -67,7 +68,10 @@ class CreateItemPanel extends ConsumerWidget {
           quantity: 1,
           photoPath: null);
 
-      ref.read(targetList).addItem(item);
+      for (ProviderListenable<ItemListBaseNotifier> list in targetLists) {
+        ref.read(list).addItem(item);
+      }
+
       closePanel();
     }
 

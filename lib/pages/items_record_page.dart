@@ -22,26 +22,35 @@ class RecordPage extends ConsumerWidget {
     //         quantity: 1,
     //         photoPath: "assets/images/8.PNG"));
 
-    final List<Item> itemList = ref.watch(recordItemList);
+    final List<Item> itemList = ref.watch(recordItemListProvider);
     final bool isPanelOpen = ref.watch(openPanelProvider);
 
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.grey[350],
         body: Column(
           children: [
             const RecordHeader(),
             Expanded(
-              child: SlideUpPanel(
-                body: ItemsList(
-                  list: itemList,
-                  columnHeight: 270,
-                  displayQuantity: false,
-                  freezeScroll: false,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(30),
+                  topRight: Radius.circular(30),
                 ),
-                panel: CreateItemPanel(targetList: recordItemList.notifier),
-                duration: const Duration(milliseconds: 500),
-                isOpen: isPanelOpen,
+                child: Container(
+                  color: Theme.of(context).colorScheme.background,
+                  child: SlideUpPanel(
+                    body: ItemsList(
+                      list: itemList,
+                      columnHeight: 270,
+                      displayQuantity: false,
+                      freezeScroll: false,
+                    ),
+                    panel: CreateItemPanel(
+                        targetLists: [recordItemListProvider.notifier]),
+                    duration: const Duration(milliseconds: 500),
+                    isOpen: isPanelOpen,
+                  ),
+                ),
               ),
             ),
           ],
@@ -65,11 +74,7 @@ class RecordHeader extends ConsumerWidget {
         // duration: Duration(seconds: 1),
         padding: const EdgeInsets.all(15),
         decoration: BoxDecoration(
-          color: Colors.blueGrey[200],
-          borderRadius: const BorderRadius.only(
-            bottomLeft: Radius.circular(30),
-            bottomRight: Radius.circular(30),
-          ),
+          color: Theme.of(context).colorScheme.primary,
         ),
         child: Column(
           children: [
@@ -79,13 +84,15 @@ class RecordHeader extends ConsumerWidget {
                 icon: Icon(
                   Icons.arrow_back_ios,
                   size: 30,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
               Text(
                 title,
-                style:
-                    const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Theme.of(context).colorScheme.secondary),
               ),
               //this is a temporary solution
               IconButton(
@@ -96,7 +103,7 @@ class RecordHeader extends ConsumerWidget {
                 icon: Icon(
                   Icons.add_box,
                   size: 30,
-                  color: Theme.of(context).colorScheme.primary,
+                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ]),

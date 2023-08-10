@@ -26,24 +26,27 @@ class _ReceiptsTabState extends State<ReceiptsTab>
   Widget build(BuildContext context) {
     super.build(context);
 
-    return Consumer(builder: (context, ref, child) {
-      final bool isPanelOpen = ref.watch(openPanelProvider);
+    return Container(
+      color: Theme.of(context).colorScheme.background,
+      child: Consumer(builder: (context, ref, child) {
+        final bool isPanelOpen = ref.watch(openPanelProvider);
 
-      return SlideUpPanel(
-        body: ListView.builder(
-          physics: isPanelOpen ? const NeverScrollableScrollPhysics() : null,
-          itemCount: receipts.length,
-          itemBuilder: (BuildContext context, int index) {
-            return ReceiptCard(
-              receipt: receipts[index],
-            );
-          },
-        ),
-        panel: const CreateReceiptPanel(),
-        duration: const Duration(milliseconds: 500),
-        isOpen: isPanelOpen,
-      );
-    });
+        return SlideUpPanel(
+          body: ListView.builder(
+            physics: isPanelOpen ? const NeverScrollableScrollPhysics() : null,
+            itemCount: receipts.length,
+            itemBuilder: (BuildContext context, int index) {
+              return ReceiptCard(
+                receipt: receipts[index],
+              );
+            },
+          ),
+          panel: const CreateReceiptPanel(),
+          duration: const Duration(milliseconds: 500),
+          isOpen: isPanelOpen,
+        );
+      }),
+    );
   }
 
   @override

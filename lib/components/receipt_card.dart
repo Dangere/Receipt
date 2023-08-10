@@ -54,16 +54,14 @@ class ReceiptCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                             maxLines: 1,
                             softWrap: false,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+                            style: Theme.of(context).textTheme.titleMedium,
                           ),
                           const SizedBox(
                             height: 5,
                           ),
                           Text(
                               "Purchased Items: ${receipt.broughtItems.length}",
-                              style: const TextStyle(
-                                  fontSize: 14, color: Colors.black45)),
+                              style: Theme.of(context).textTheme.bodySmall),
                         ],
                       ),
                     ),

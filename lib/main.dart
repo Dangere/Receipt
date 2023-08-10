@@ -33,41 +33,45 @@ class MyApp extends ConsumerWidget {
 
     return MaterialApp(
       theme: ThemeData(
-        textTheme: GoogleFonts.readexProTextTheme(),
-        primarySwatch: MaterialColor(darkAccent.value, <int, Color>{
-          50: darkAccent.withOpacity(0.1),
-          100: darkAccent.withOpacity(0.2),
-          200: darkAccent.withOpacity(0.3),
-          300: darkAccent.withOpacity(0.4),
-          400: darkAccent.withOpacity(0.5),
-          500: darkAccent.withOpacity(0.6),
-          600: darkAccent.withOpacity(0.7),
-          700: darkAccent.withOpacity(0.8),
-          800: darkAccent.withOpacity(0.9),
-          900: darkAccent.withOpacity(1.0),
-        }),
-        appBarTheme: const AppBarTheme(
-          color: Colors.blue,
-          systemOverlayStyle:
-              SystemUiOverlayStyle(statusBarColor: Colors.blue), // 2
+        // colorSchemeSeed: Color(0xFFFFBF9B),
+        colorScheme: ColorScheme(
+          brightness: Brightness.light,
+          primary: Colors.blueGrey.shade800,
+          onPrimary: Colors.blueGrey.shade50,
+          secondary: Colors.blueGrey.shade100,
+          onSecondary: Color(0xFF4D4D4D),
+          error: Color(0xFFF32424),
+          onError: Color(0xFF4D4D4D),
+          background: Colors.grey.shade300,
+          onBackground: Color(0xFF4D4D4D),
+          surface: Color(0xFFFFFFFF),
+          onSurface: Color(0xFF4D4D4D),
         ),
+        useMaterial3: true,
+        textTheme: GoogleFonts.readexProTextTheme(),
+        scaffoldBackgroundColor: Colors.blueGrey.shade800,
       ),
       debugShowCheckedModeBanner: false,
       home: SafeArea(
         child: Scaffold(
-          backgroundColor: Colors.grey[350],
           body: Column(
             children: [
               if (!onSplashScreen) Header(pageController: pageController),
               Expanded(
-                child: PageView(
-                  onPageChanged: (value) => ref
-                      .read(tabIndexProvider.notifier)
-                      .update((state) => value),
-                  //instead of using .state = value. I used update((state) => value)
-                  controller: pageController,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: tabs,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                  child: PageView(
+                    onPageChanged: (value) => ref
+                        .read(tabIndexProvider.notifier)
+                        .update((state) => value),
+                    //instead of using .state = value. I used update((state) => value)
+                    controller: pageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: tabs,
+                  ),
                 ),
               ),
             ],
@@ -103,7 +107,7 @@ class SideDrawer extends ConsumerWidget {
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Colors.blueGrey[100],
+              color: Theme.of(context).colorScheme.secondary,
             ),
             child: const UserDrawer(),
           ),
