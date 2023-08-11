@@ -29,6 +29,18 @@ class MyApp extends ConsumerWidget {
       const ReceiptsTab()
     ];
 
+    Future<bool> onWillPop() async {
+      if (ref.read(openPanelProvider.notifier).state == true) {
+        ref.read(openPanelProvider.notifier).state = false;
+        ref.read(freezeAppBarProvider.notifier).state = false;
+        FocusManager.instance.primaryFocus?.unfocus();
+
+        return false;
+      } else {
+        return true;
+      }
+    }
+
     Color darkAccent = const Color(0xff2E3039);
 
     return MaterialApp(
@@ -53,36 +65,39 @@ class MyApp extends ConsumerWidget {
       ),
       debugShowCheckedModeBanner: false,
       home: SafeArea(
-        child: Scaffold(
-          body: Column(
-            children: [
-              if (!onSplashScreen) Header(pageController: pageController),
-              Expanded(
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
-                  ),
-                  child: PageView(
-                    onPageChanged: (value) => ref
-                        .read(tabIndexProvider.notifier)
-                        .update((state) => value),
-                    //instead of using .state = value. I used update((state) => value)
-                    controller: pageController,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: tabs,
+        child: WillPopScope(
+          onWillPop: onWillPop,
+          child: Scaffold(
+            body: Column(
+              children: [
+                if (!onSplashScreen) Header(pageController: pageController),
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
+                    ),
+                    child: PageView(
+                      onPageChanged: (value) => ref
+                          .read(tabIndexProvider.notifier)
+                          .update((state) => value),
+                      //instead of using .state = value. I used update((state) => value)
+                      controller: pageController,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: tabs,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
+            drawerEnableOpenDragGesture: false,
+            drawer: SideDrawer(
+                selectedLang: selectedLang, pageController: pageController),
+            // floatingActionButton: Visibility(
+            //   visible: !onSplashScreen,
+            //   child: OpenPanelButton(),
+            // ),
           ),
-          drawerEnableOpenDragGesture: false,
-          drawer: SideDrawer(
-              selectedLang: selectedLang, pageController: pageController),
-          // floatingActionButton: Visibility(
-          //   visible: !onSplashScreen,
-          //   child: OpenPanelButton(),
-          // ),
         ),
       ),
     );
@@ -144,45 +159,6 @@ class SideDrawer extends ConsumerWidget {
     );
   }
 }
-
-// class OpenPanelButton extends ConsumerWidget {
-//   const OpenPanelButton({super.key});
-
-//   // final bool slideUpPanelIsOpen;
-//   // final PanelController panelController;
-
-//   @override
-//   Widget build(BuildContext context, ref) {
-//     final int tabIndex = ref.watch(tabIndexProvider);
-//     final bool isPanelOpen = ref.watch(openPanelProvider);
-//     return AnimatedSlide(
-//       duration: const Duration(milliseconds: 300),
-//       offset: !isPanelOpen ? Offset.zero : const Offset(0, 2),
-//       child: Container(
-//         padding: const EdgeInsets.all(12) +
-//             const EdgeInsets.symmetric(horizontal: 12),
-//         decoration: BoxDecoration(
-//           color: const Color.fromARGB(255, 20, 16, 26),
-//           borderRadius: BorderRadius.circular(12),
-//         ),
-//         child: TextButton(
-//           onPressed: () {
-//             ref.read(freezeAppBarProvider.notifier).state = true;
-//             ref.read(openPanelProvider.notifier).state = true;
-//           },
-//           child: Text(
-//             tabIndex == 0 ? "Create Item" : "Create Receipt",
-//             style: const TextStyle(
-//               color: Colors.white,
-//               fontWeight: FontWeight.w300,
-//               fontSize: 18,
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
 
 class UserDrawer extends StatelessWidget {
   const UserDrawer({super.key});

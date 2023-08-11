@@ -46,6 +46,8 @@ class CreateItemPanel extends ConsumerWidget {
     void closePanel() {
       ref.read(openPanelProvider.notifier).state = false;
       ref.read(freezeAppBarProvider.notifier).state = false;
+
+      FocusManager.instance.primaryFocus?.unfocus();
     }
 
     void createItem() {

@@ -25,35 +25,50 @@ class RecordPage extends ConsumerWidget {
     final List<Item> itemList = ref.watch(recordItemListProvider);
     final bool isPanelOpen = ref.watch(openPanelProvider);
 
+    Future<bool> onWillPop() async {
+      if (ref.read(openPanelProvider.notifier).state == true) {
+        ref.read(openPanelProvider.notifier).state = false;
+        ref.read(freezeAppBarProvider.notifier).state = false;
+        FocusManager.instance.primaryFocus?.unfocus();
+
+        return false;
+      } else {
+        return true;
+      }
+    }
+
     return SafeArea(
-      child: Scaffold(
-        body: Column(
-          children: [
-            const RecordHeader(),
-            Expanded(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
-                ),
-                child: Container(
-                  color: Theme.of(context).colorScheme.background,
-                  child: SlideUpPanel(
-                    body: ItemsList(
-                      list: itemList,
-                      columnHeight: 270,
-                      displayQuantity: false,
-                      freezeScroll: false,
+      child: WillPopScope(
+        onWillPop: onWillPop,
+        child: Scaffold(
+          body: Column(
+            children: [
+              const RecordHeader(),
+              Expanded(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                  child: Container(
+                    color: Theme.of(context).colorScheme.background,
+                    child: SlideUpPanel(
+                      body: ItemsList(
+                        list: itemList,
+                        columnHeight: 270,
+                        displayQuantity: false,
+                        freezeScroll: false,
+                      ),
+                      panel: CreateItemPanel(
+                          targetLists: [recordItemListProvider.notifier]),
+                      duration: const Duration(milliseconds: 500),
+                      isOpen: isPanelOpen,
                     ),
-                    panel: CreateItemPanel(
-                        targetLists: [recordItemListProvider.notifier]),
-                    duration: const Duration(milliseconds: 500),
-                    isOpen: isPanelOpen,
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
