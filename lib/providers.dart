@@ -57,17 +57,20 @@ class StockItemListNotifier extends ItemListBaseNotifier {
   void addItem(Item item) {
     List<Item> list = state;
     bool itemExist = false;
+    print("new item has quantity of" + item.quantity.toString());
 
     for (var element in list) {
       if (element.id == item.id) {
-        element.quantity += item.quantity;
+        item.quantity += element.quantity;
+        element = item;
         itemExist = true;
       }
     }
-    if (!itemExist) {
-      state = [...state, item];
+    if (itemExist) {
+      print("adding" + item.quantity.toString());
+      state = [...list];
     } else {
-      state = list;
+      state = [...state, item];
     }
   }
 }

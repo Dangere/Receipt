@@ -38,19 +38,19 @@ class Header extends ConsumerWidget {
     void addItemToStock() {
       // ref.read(freezeAppBarProvider.notifier).state = true;
       // ref.read(openPanelProvider.notifier).state = true;
+
+      void createNew() {
+        ref.read(freezeAppBarProvider.notifier).state = true;
+        ref.read(openPanelProvider.notifier).state = true;
+      }
+
+      void pickItem() {
+        transferItemDialogPanel(context, ref, ref.watch(recordItemListProvider),
+            stockItemListProvider.notifier);
+      }
+
       addItemDialogPanel(
-          context: context,
-          createNew: () {
-            ref.read(freezeAppBarProvider.notifier).state = true;
-            ref.read(openPanelProvider.notifier).state = true;
-          },
-          pickItem: () {
-            transferItemDialogPanel(
-                context,
-                ref,
-                recordItemListProvider.notifier,
-                stockItemListProvider.notifier);
-          });
+          context: context, createNew: createNew, pickItem: pickItem);
     }
 
     void addReceiptToReceipt() {}

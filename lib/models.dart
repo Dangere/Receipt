@@ -13,6 +13,10 @@ class Item {
       required this.sellingPrice,
       required this.quantity,
       required this.photoPath});
+
+  void setQuantity(int quantity) {
+    this.quantity = quantity;
+  }
 }
 
 class Receipt {

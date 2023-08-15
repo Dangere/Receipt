@@ -41,8 +41,6 @@ class MyApp extends ConsumerWidget {
       }
     }
 
-    Color darkAccent = const Color(0xff2E3039);
-
     return MaterialApp(
       theme: ThemeData(
         // colorSchemeSeed: Color(0xFFFFBF9B),

@@ -80,11 +80,12 @@ class RecordHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, ref) {
     final selectedLang = ref.watch(selectedLanguageProvider);
+    final bool freezeAppBar = ref.watch(freezeAppBarProvider);
 
     String title = selectedLang == SelectedLanguage.arabic ? "سجل" : "Record";
 
     return AbsorbPointer(
-      absorbing: false,
+      absorbing: freezeAppBar,
       child: Container(
         // duration: Duration(seconds: 1),
         padding: const EdgeInsets.all(15),
