@@ -117,13 +117,28 @@ Future<String?> selectedItemDialogPanel(
                       child: ItemCardMini(item: item, displayQuantity: true)),
                 ),
                 Container(
-                  color: Colors.grey[300],
+                  color: const Color.fromRGBO(224, 224, 224, 1),
                   child: SizedBox(
-                    width: 90,
+                    width: 120,
                     height: 40,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (quantity == 0) return;
+                              quantity--;
+                            });
+                          },
+                          icon: Icon(
+                            Icons.remove,
+                            color: quantity == 0
+                                ? Colors.grey
+                                : Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        Text(quantity.toString()),
                         IconButton(
                             onPressed: () {
                               setState(() {
@@ -131,7 +146,6 @@ Future<String?> selectedItemDialogPanel(
                               });
                             },
                             icon: const Icon(Icons.add)),
-                        Text(quantity.toString())
                       ],
                     ),
                   ),
@@ -145,6 +159,7 @@ Future<String?> selectedItemDialogPanel(
       actions: <Widget>[
         TextButton(
           onPressed: () {
+            if (quantity == 0) return;
             Navigator.pop(context, 'Add');
 
             Item itemToAdd = Item.copyWithQuantity(item, quantity);
@@ -158,6 +173,106 @@ Future<String?> selectedItemDialogPanel(
             transferItemDialogPanel(context, ref, from, to);
           },
           child: const Text('Return'),
+        ),
+      ],
+    ),
+  );
+}
+
+Future<String?> changeQuantityDialogPanel(
+  BuildContext context,
+  WidgetRef ref,
+  Item item,
+  ProviderListenable<ItemListBaseNotifier> to,
+) {
+  int quantity = item.quantity;
+  return showDialog<String>(
+    context: context,
+    builder: (BuildContext context) => AlertDialog(
+      backgroundColor: Theme.of(context).colorScheme.background,
+      title: Center(
+        child: Text(
+          'Change Quantity',
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ),
+      content: SizedBox(
+        height: 120,
+        child: StatefulBuilder(
+          builder: ((context, setState) {
+            return Column(
+              children: [
+                Container(
+                  color: Colors.grey[400],
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                      child: ItemCardMini(item: item, displayQuantity: true)),
+                ),
+                Container(
+                  color: const Color.fromRGBO(224, 224, 224, 1),
+                  child: SizedBox(
+                    width: 120,
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              if (quantity == 0) return;
+                              quantity--;
+                            });
+                          },
+                          icon: Icon(
+                            Icons.remove,
+                            color: quantity == 0
+                                ? Colors.grey
+                                : Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        Text(quantity.toString()),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              quantity++;
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.add,
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }),
+        ),
+      ),
+      actionsAlignment: MainAxisAlignment.spaceEvenly,
+      actions: <Widget>[
+        TextButton(
+          onPressed: () {
+            if (quantity == 0) {
+              Navigator.pop(context, 'remove');
+              ref.read(to).removeItem(item);
+
+              return;
+            }
+
+            Navigator.pop(context, 'Change');
+
+            Item changedItem = Item.copyWithQuantity(item, quantity);
+            ref.read(to).updateItem(changedItem);
+          },
+          child: const Text('Change'),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.pop(context, 'Cancel');
+          },
+          child: const Text('Cancel'),
         ),
       ],
     ),

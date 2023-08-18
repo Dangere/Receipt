@@ -57,7 +57,7 @@ class CreateItemPanel extends ConsumerWidget {
           sellingPriceController.text.isEmpty) return;
 
       for (ProviderListenable<ItemListBaseNotifier> list in targetLists) {
-        if (ref.read(list).itemExist(int.parse(idController.text))) {
+        if (ref.read(list).itemExist(int.parse(idController.text)) != -1) {
           itemAlreadyExistAlert();
           return;
         }

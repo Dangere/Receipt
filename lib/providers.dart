@@ -19,24 +19,28 @@ class ItemListBaseNotifier extends StateNotifier<List<Item>> {
 
   void addItem(Item item) {}
 
-  bool itemExist(int id) {
-    for (var element in state) {
-      if (element.id == id) {
-        return true;
+  int itemExist(int id) {
+    for (var i = 0; i < state.length; i++) {
+      if (state[i].id == id) {
+        return i;
       }
     }
 
-    return false;
+    return -1;
   }
 
-  void updateItem(Item item) {
-    List<Item> list = state;
+  void updateItem(Item item) {}
 
-    for (var element in list) {
-      if (element.id == item.id) element = item;
-    }
+  void removeItem(Item item) {
+    final List<Item> list = state;
 
-    state = list;
+    int itemExists = itemExist(item.id);
+
+    if (itemExists == -1) Error();
+
+    list.removeAt(itemExists);
+
+    state = [...list];
   }
 
   List<Item> storedItems() {
@@ -54,10 +58,26 @@ class StockItemListNotifier extends ItemListBaseNotifier {
   StockItemListNotifier() : super([]);
 
   @override
-  void addItem(Item item) {
-    List<Item> list = state;
+  void updateItem(Item item) {
+    if (itemExist(item.id) == -1) Error();
 
-    Item newItem = Item.copy(item);
+    final List<Item> list = state;
+    final Item newItem = Item.copy(item);
+
+    for (int i = 0; i < list.length; i++) {
+      if (list[i].id == item.id) {
+        list[i] = newItem;
+      }
+    }
+
+    state = [...list];
+  }
+
+  @override
+  void addItem(Item item) {
+    final List<Item> list = state;
+
+    final Item newItem = Item.copy(item);
     if (newItem.quantity == 0) newItem.quantity = 1;
 
     bool itemExist = false;
@@ -83,7 +103,7 @@ class RecordItemListNotifier extends ItemListBaseNotifier {
 
   @override
   void addItem(Item item) {
-    if (itemExist(item.id)) Error();
+    if (itemExist(item.id) == -1) Error();
 
     Item newItem = Item.copy(item);
     newItem.quantity = 0;
