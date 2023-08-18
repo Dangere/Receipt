@@ -56,7 +56,7 @@ class RecordPage extends ConsumerWidget {
                       body: ItemsList(
                         list: itemList,
                         columnHeight: 270,
-                        displayQuantity: false,
+                        displayQuantity: true,
                         freezeScroll: false,
                       ),
                       panel: CreateItemPanel(

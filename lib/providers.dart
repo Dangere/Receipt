@@ -56,28 +56,27 @@ class StockItemListNotifier extends ItemListBaseNotifier {
   @override
   void addItem(Item item) {
     List<Item> list = state;
-    bool itemExist = false;
-    print("new item has quantity of" + item.quantity.toString());
 
-    for (var element in list) {
-      if (element.id == item.id) {
-        item.quantity += element.quantity;
-        element = item;
+    Item newItem = Item.copy(item);
+    if (newItem.quantity == 0) newItem.quantity = 1;
+
+    bool itemExist = false;
+
+    for (int i = 0; i < list.length; i++) {
+      if (list[i].id == item.id) {
         itemExist = true;
+        newItem.quantity += list[i].quantity;
+        list[i] = newItem;
       }
     }
+
     if (itemExist) {
-      print("adding" + item.quantity.toString());
       state = [...list];
     } else {
-      state = [...state, item];
+      state = [...state, newItem];
     }
   }
 }
-
-final recordItemListProvider =
-    StateNotifierProvider<RecordItemListNotifier, List<Item>>(
-        (ref) => RecordItemListNotifier());
 
 class RecordItemListNotifier extends ItemListBaseNotifier {
   RecordItemListNotifier() : super([]);
@@ -86,8 +85,13 @@ class RecordItemListNotifier extends ItemListBaseNotifier {
   void addItem(Item item) {
     if (itemExist(item.id)) Error();
 
-    item.quantity = 0;
+    Item newItem = Item.copy(item);
+    newItem.quantity = 0;
 
-    state = [...state, item];
+    state = [...state, newItem];
   }
 }
+
+final recordItemListProvider =
+    StateNotifierProvider<RecordItemListNotifier, List<Item>>(
+        (ref) => RecordItemListNotifier());

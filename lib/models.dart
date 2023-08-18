@@ -14,8 +14,34 @@ class Item {
       required this.quantity,
       required this.photoPath});
 
-  void setQuantity(int quantity) {
-    this.quantity = quantity;
+  factory Item.copy(Item original) {
+    return Item(
+        name: original.name,
+        id: original.id,
+        broughtPrice: original.broughtPrice,
+        sellingPrice: original.sellingPrice,
+        quantity: original.quantity,
+        photoPath: original.photoPath);
+  }
+
+  factory Item.copyWithQuantity(Item original, int newQuantity) {
+    return Item(
+        name: original.name,
+        id: original.id,
+        broughtPrice: original.broughtPrice,
+        sellingPrice: original.sellingPrice,
+        quantity: newQuantity,
+        photoPath: original.photoPath);
+  }
+
+  factory Item.copyWithAddedQuantity(Item original, int addedQuantity) {
+    return Item(
+        name: original.name,
+        id: original.id,
+        broughtPrice: original.broughtPrice,
+        sellingPrice: original.sellingPrice,
+        quantity: original.quantity + addedQuantity,
+        photoPath: original.photoPath);
   }
 }
 

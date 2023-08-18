@@ -67,7 +67,7 @@ class CreateItemPanel extends ConsumerWidget {
           id: int.parse(idController.text),
           broughtPrice: int.parse(broughtPriceController.text),
           sellingPrice: int.parse(sellingPriceController.text),
-          quantity: 1,
+          quantity: 0,
           photoPath: null);
 
       for (ProviderListenable<ItemListBaseNotifier> list in targetLists) {

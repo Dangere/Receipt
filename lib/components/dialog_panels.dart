@@ -94,7 +94,6 @@ Future<String?> selectedItemDialogPanel(
   ProviderListenable<ItemListBaseNotifier> to,
 ) {
   int quantity = 0;
-  item.quantity = 1;
   return showDialog<String>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
@@ -105,37 +104,51 @@ Future<String?> selectedItemDialogPanel(
           style: Theme.of(context).textTheme.titleMedium,
         ),
       ),
-      content: Column(
-        children: [
-          Container(
-            color: Colors.grey[400],
-            child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 2.0),
-                child: ItemCardMini(item: item, displayQuantity: true)),
-          ),
-          Container(
-            color: Colors.grey[300],
-            child: SizedBox(
-              width: 90,
-              height: 50,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                      onPressed: () => quantity++, icon: Icon(Icons.add)),
-                  Text(quantity.toString())
-                ],
-              ),
-            ),
-          ),
-        ],
+      content: SizedBox(
+        height: 120,
+        child: StatefulBuilder(
+          builder: ((context, setState) {
+            return Column(
+              children: [
+                Container(
+                  color: Colors.grey[400],
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 2.0),
+                      child: ItemCardMini(item: item, displayQuantity: true)),
+                ),
+                Container(
+                  color: Colors.grey[300],
+                  child: SizedBox(
+                    width: 90,
+                    height: 40,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              setState(() {
+                                quantity++;
+                              });
+                            },
+                            icon: const Icon(Icons.add)),
+                        Text(quantity.toString())
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }),
+        ),
       ),
       actionsAlignment: MainAxisAlignment.spaceEvenly,
       actions: <Widget>[
         TextButton(
           onPressed: () {
             Navigator.pop(context, 'Add');
-            ref.read(to).addItem(item);
+
+            Item itemToAdd = Item.copyWithQuantity(item, quantity);
+            ref.read(to).addItem(itemToAdd);
           },
           child: const Text('Add'),
         ),
