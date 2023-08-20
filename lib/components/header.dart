@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shoppingapp/components/dialog_panels.dart';
+import 'package:shoppingapp/components/alert_dialog_panels.dart';
 
 import '../providers.dart';
 
@@ -46,11 +46,11 @@ class Header extends ConsumerWidget {
 
       void pickItem() {
         transferItemDialogPanel(context, ref, ref.watch(recordItemListProvider),
-            stockItemListProvider.notifier);
+            stockItemListProvider);
       }
 
       addItemDialogPanel(
-          context: context, createNew: createNew, pickItem: pickItem);
+          context: context, createNew: createNew, pickItem: pickItem, ref: ref);
     }
 
     void addReceiptToReceipt() {}

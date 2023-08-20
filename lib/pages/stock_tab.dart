@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shoppingapp/components/alert_dialog_panels.dart';
 import 'package:shoppingapp/components/slide_up_panel.dart';
 import 'package:shoppingapp/panels/create_item_panel.dart';
 import 'package:shoppingapp/providers.dart';
 
 import '../components/items_display_list.dart';
+import '../models.dart';
 // import '../models.dart';
 
 class StockTab extends StatefulWidget {
@@ -32,6 +34,8 @@ class _StockTabState extends State<StockTab>
               columnHeight: 270,
               displayQuantity: true,
               freezeScroll: isPanelOpen,
+              onCardTab: (Item item) => changeQuantityDialogPanel(
+                  context, ref, item, stockItemListProvider),
             ),
             panel: CreateItemPanel(targetLists: [
               stockItemListProvider.notifier,

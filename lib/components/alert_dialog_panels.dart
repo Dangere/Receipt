@@ -8,26 +8,36 @@ import '../providers.dart';
 Future<String?> addItemDialogPanel(
     {required BuildContext context,
     required VoidCallback createNew,
-    required VoidCallback pickItem}) {
+    required VoidCallback pickItem,
+    required ref}) {
+  SelectedLanguage lang = ref.watch(selectedLanguageProvider);
+  String title =
+      lang == SelectedLanguage.arabic ? "اضف غرض للمخزون" : "Add item to stock";
+
+  String fromNewString =
+      lang == SelectedLanguage.arabic ? "انشئ جديد" : "Create New";
+  String fromRecordString =
+      lang == SelectedLanguage.arabic ? "من السجل" : "From Record";
+
   return showDialog<String>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
       backgroundColor: Theme.of(context).colorScheme.background,
-      title: const Center(child: Text('Add item to stock')),
+      title: Center(child: Text(title)),
       actions: <Widget>[
         TextButton(
           onPressed: () {
             Navigator.pop(context, "Adding item");
             pickItem();
           },
-          child: const Text('From Record'),
+          child: Text(fromRecordString),
         ),
         TextButton(
           onPressed: () {
             createNew();
             Navigator.pop(context, 'Creating item');
           },
-          child: const Text('Create New'),
+          child: Text(fromNewString),
         ),
       ],
       actionsAlignment: MainAxisAlignment.spaceEvenly,
@@ -35,15 +45,23 @@ Future<String?> addItemDialogPanel(
   );
 }
 
-Future<String?> transferItemDialogPanel(BuildContext context, WidgetRef ref,
-    List<Item> from, ProviderListenable<ItemListBaseNotifier> to) {
+Future<String?> transferItemDialogPanel(
+    BuildContext context,
+    WidgetRef ref,
+    List<Item> from,
+    StateNotifierProvider<StockItemListNotifier, List<Item>> to) {
+  SelectedLanguage lang = ref.watch(selectedLanguageProvider);
+  String title =
+      lang == SelectedLanguage.arabic ? "اختار الغرض" : "Select Item";
+
+  String cancelString = lang == SelectedLanguage.arabic ? "الغاء" : "Cancel";
   return showDialog<String>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
       backgroundColor: Theme.of(context).colorScheme.background,
       title: Center(
           child: Text(
-        'Select Item',
+        title,
         style: Theme.of(context).textTheme.titleMedium,
       )),
       content: SizedBox(
@@ -77,9 +95,9 @@ Future<String?> transferItemDialogPanel(BuildContext context, WidgetRef ref,
       actions: <Widget>[
         TextButton(
           onPressed: () {
-            Navigator.pop(context, 'close');
+            Navigator.pop(context, 'cancel');
           },
-          child: const Text('Close'),
+          child: Text(cancelString),
         ),
       ],
     ),
@@ -91,16 +109,23 @@ Future<String?> selectedItemDialogPanel(
   WidgetRef ref,
   Item item,
   List<Item> from,
-  ProviderListenable<ItemListBaseNotifier> to,
+  StateNotifierProvider<StockItemListNotifier, List<Item>> to,
 ) {
   int quantity = 0;
+
+  SelectedLanguage lang = ref.watch(selectedLanguageProvider);
+  String title =
+      lang == SelectedLanguage.arabic ? "الغرض المختار" : "Selected Item";
+
+  String returnString = lang == SelectedLanguage.arabic ? "الرجوع" : "Return";
+  String addString = lang == SelectedLanguage.arabic ? "اضف" : "Add";
   return showDialog<String>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
       backgroundColor: Theme.of(context).colorScheme.background,
       title: Center(
         child: Text(
-          'Selected Item',
+          title,
           style: Theme.of(context).textTheme.titleMedium,
         ),
       ),
@@ -163,16 +188,16 @@ Future<String?> selectedItemDialogPanel(
             Navigator.pop(context, 'Add');
 
             Item itemToAdd = Item.copyWithQuantity(item, quantity);
-            ref.read(to).addItem(itemToAdd);
+            ref.read(to.notifier).addItem(itemToAdd);
           },
-          child: const Text('Add'),
+          child: Text(addString),
         ),
         TextButton(
           onPressed: () {
             Navigator.pop(context, 'Return');
             transferItemDialogPanel(context, ref, from, to);
           },
-          child: const Text('Return'),
+          child: Text(returnString),
         ),
       ],
     ),
@@ -183,16 +208,24 @@ Future<String?> changeQuantityDialogPanel(
   BuildContext context,
   WidgetRef ref,
   Item item,
-  ProviderListenable<ItemListBaseNotifier> to,
+  StateNotifierProvider<StockItemListNotifier, List<Item>> to,
 ) {
   int quantity = item.quantity;
+
+  SelectedLanguage lang = ref.watch(selectedLanguageProvider);
+  String title =
+      lang == SelectedLanguage.arabic ? "تغير الكمية" : "Change Quantity";
+
+  String changeString = lang == SelectedLanguage.arabic ? "تغير" : "Change";
+  String cancelString = lang == SelectedLanguage.arabic ? "الغاء" : "Cancel";
+
   return showDialog<String>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
       backgroundColor: Theme.of(context).colorScheme.background,
       title: Center(
         child: Text(
-          'Change Quantity',
+          title,
           style: Theme.of(context).textTheme.titleMedium,
         ),
       ),
@@ -256,7 +289,7 @@ Future<String?> changeQuantityDialogPanel(
           onPressed: () {
             if (quantity == 0) {
               Navigator.pop(context, 'remove');
-              ref.read(to).removeItem(item);
+              ref.read(to.notifier).removeItem(item);
 
               return;
             }
@@ -264,15 +297,15 @@ Future<String?> changeQuantityDialogPanel(
             Navigator.pop(context, 'Change');
 
             Item changedItem = Item.copyWithQuantity(item, quantity);
-            ref.read(to).updateItem(changedItem);
+            ref.read(to.notifier).updateItem(changedItem);
           },
-          child: const Text('Change'),
+          child: Text(changeString),
         ),
         TextButton(
           onPressed: () {
             Navigator.pop(context, 'Cancel');
           },
-          child: const Text('Cancel'),
+          child: Text(cancelString),
         ),
       ],
     ),

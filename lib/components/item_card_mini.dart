@@ -47,9 +47,9 @@ class ItemCardMini extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
-            Text(item.quantity.toString(),
-                style: const TextStyle(fontSize: 14),
-                textAlign: TextAlign.center),
+            // Text(item.quantity.toString(),
+            //     style: const TextStyle(fontSize: 14),
+            //     textAlign: TextAlign.center),
             // Row(
             //   mainAxisAlignment: MainAxisAlignment.spaceAround,
             //   children: [

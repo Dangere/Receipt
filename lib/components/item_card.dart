@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shoppingapp/providers.dart';
 
 import '../models.dart';
-import 'dialog_panels.dart';
 
-class ItemCard extends ConsumerWidget {
+typedef void ItemCallBack(Item item);
+
+class ItemCard extends StatelessWidget {
   const ItemCard(
-      {super.key, required this.item, required this.displayQuantity});
+      {super.key,
+      required this.item,
+      required this.displayQuantity,
+      required this.onTab});
 
   final Item item;
   final bool displayQuantity;
+  final ItemCallBack onTab;
 
   @override
-  Widget build(BuildContext context, ref) {
+  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        print("object");
-        changeQuantityDialogPanel(
-            context, ref, item, stockItemListProvider.notifier);
-      },
+      onTap: () => onTab(item),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.grey[200],
@@ -95,7 +94,7 @@ class ItemCard extends ConsumerWidget {
                           ),
                         )
                       : Icon(
-                          Icons.insert_drive_file_outlined,
+                          Icons.save_alt_rounded,
                           color: Colors.blueGrey[50],
                         ),
                 ),

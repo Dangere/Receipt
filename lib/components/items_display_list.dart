@@ -10,19 +10,21 @@ class ItemsList extends StatelessWidget {
       required this.list,
       required this.columnHeight,
       required this.displayQuantity,
-      required this.freezeScroll});
+      required this.freezeScroll,
+      required this.onCardTab});
 
   final List<Item> list;
   final double columnHeight;
   final bool displayQuantity;
   final bool freezeScroll;
+  final ItemCallBack onCardTab;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5.0),
       child: AlignedGridView.count(
-        physics: freezeScroll ? NeverScrollableScrollPhysics() : null,
+        physics: freezeScroll ? const NeverScrollableScrollPhysics() : null,
         itemCount: list.length,
         crossAxisCount: 2,
         itemBuilder: (context, index) => SizedBox(
@@ -32,6 +34,7 @@ class ItemsList extends StatelessWidget {
             child: ItemCard(
               item: list[index],
               displayQuantity: displayQuantity,
+              onTab: onCardTab,
             ),
           ),
         ),

@@ -56,8 +56,9 @@ class RecordPage extends ConsumerWidget {
                       body: ItemsList(
                         list: itemList,
                         columnHeight: 270,
-                        displayQuantity: true,
+                        displayQuantity: false,
                         freezeScroll: false,
+                        onCardTab: (Item item) => "",
                       ),
                       panel: CreateItemPanel(
                           targetLists: [recordItemListProvider.notifier]),
@@ -129,25 +130,6 @@ class RecordHeader extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class RecordPanelList extends StatelessWidget {
-  const RecordPanelList({
-    super.key,
-    required this.itemList,
-  });
-
-  final List<Item> itemList;
-
-  @override
-  Widget build(BuildContext context) {
-    return ItemsList(
-      list: itemList,
-      columnHeight: 270,
-      displayQuantity: false,
-      freezeScroll: false,
     );
   }
 }
