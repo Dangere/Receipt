@@ -16,7 +16,7 @@ class ItemCardMini extends StatelessWidget {
       child: Container(
         decoration: BoxDecoration(
           color: Colors.grey[200],
-          borderRadius: BorderRadius.circular(5),
+          borderRadius: BorderRadius.circular(15),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.1),
@@ -45,11 +45,11 @@ class ItemCardMini extends StatelessWidget {
                 style: const TextStyle(fontSize: 14),
                 textAlign: TextAlign.center),
             const SizedBox(
-              height: 20,
+              height: 40,
             ),
-            // Text(item.quantity.toString(),
-            //     style: const TextStyle(fontSize: 14),
-            //     textAlign: TextAlign.center),
+            Text(item.quantity.toString(),
+                style: const TextStyle(fontSize: 14),
+                textAlign: TextAlign.center),
             // Row(
             //   mainAxisAlignment: MainAxisAlignment.spaceAround,
             //   children: [

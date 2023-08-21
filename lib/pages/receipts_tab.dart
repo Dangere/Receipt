@@ -16,11 +16,12 @@ class ReceiptsTab extends StatefulWidget {
 class _ReceiptsTabState extends State<ReceiptsTab>
     with AutomaticKeepAliveClientMixin {
   List<Receipt> receipts = List.generate(
-      10,
-      (index) => Receipt(
-          customerName: "Customer Name",
-          broughtItems: [],
-          creationDate: "2023/08/23"));
+    10,
+    (index) => Receipt(
+        customerName: "Customer Name",
+        broughtItems: [],
+        creationDate: "2023/08/23"),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +31,15 @@ class _ReceiptsTabState extends State<ReceiptsTab>
       color: Theme.of(context).colorScheme.background,
       child: Consumer(builder: (context, ref, child) {
         final bool isPanelOpen = ref.watch(openPanelProvider);
+        final int tabIndex = ref.watch(tabIndexProvider);
+
+        // if (isPanelOpen && tabIndex == 1) {
+        //   ref
+        //       .read(copiedStockItemListProvider.notifier)
+        //       .replaceList(ref.read(stockItemListProvider));
+
+        //   print("copying the stock list");
+        // }
 
         return SlideUpPanel(
           body: ListView.builder(
@@ -41,7 +51,7 @@ class _ReceiptsTabState extends State<ReceiptsTab>
               );
             },
           ),
-          panel: const CreateReceiptPanel(),
+          panel: CreateReceiptPanel(),
           duration: const Duration(milliseconds: 500),
           isOpen: isPanelOpen,
         );

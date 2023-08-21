@@ -67,7 +67,7 @@ class CreateItemPanel extends ConsumerWidget {
           id: int.parse(idController.text),
           broughtPrice: int.parse(broughtPriceController.text),
           sellingPrice: int.parse(sellingPriceController.text),
-          quantity: 0,
+          quantity: 1,
           photoPath: null);
 
       for (ProviderListenable<ItemListBaseNotifier> list in targetLists) {
@@ -229,18 +229,17 @@ class CreateItemPanel extends ConsumerWidget {
                   ],
                 ),
                 const SizedBox(
-                  height: 10,
+                  height: 20,
                 ),
                 Row(
                   children: [
-                    TextButton(
-                      onPressed: createItem,
-                      child: Container(
-                        padding: const EdgeInsets.all(12) +
-                            const EdgeInsets.symmetric(horizontal: 12),
-                        decoration: BoxDecoration(
-                            color: const Color.fromARGB(255, 20, 16, 26),
-                            borderRadius: BorderRadius.circular(12)),
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 20, 16, 26),
+                          borderRadius: BorderRadius.circular(12)),
+                      child: TextButton(
+                        onPressed: createItem,
                         child: Text(
                           createItemText,
                           style: const TextStyle(

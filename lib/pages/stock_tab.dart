@@ -34,8 +34,8 @@ class _StockTabState extends State<StockTab>
               columnHeight: 270,
               displayQuantity: true,
               freezeScroll: isPanelOpen,
-              onCardTab: (Item item) => changeQuantityDialogPanel(
-                  context, ref, item, stockItemListProvider),
+              onCardTab: (Item item) => changeQuantityDialogPanel(context, ref,
+                  item, recordItemListProvider, stockItemListProvider, false),
             ),
             panel: CreateItemPanel(targetLists: [
               stockItemListProvider.notifier,

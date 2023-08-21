@@ -46,9 +46,9 @@ class Item {
 }
 
 class Receipt {
-  String customerName;
-  List<Item> broughtItems;
-  String creationDate;
+  final String customerName;
+  final List<Item> broughtItems;
+  final String creationDate;
 
   Receipt({
     required this.customerName,

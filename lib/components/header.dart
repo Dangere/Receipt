@@ -27,9 +27,6 @@ class Header extends ConsumerWidget {
       case 1:
         title =
             selectedLang == SelectedLanguage.arabic ? "إيصالات" : "Receipts";
-      case 2:
-        title = selectedLang == SelectedLanguage.arabic ? "سجل" : "Record";
-
         break;
       default:
         title = "";
@@ -45,15 +42,31 @@ class Header extends ConsumerWidget {
       }
 
       void pickItem() {
-        transferItemDialogPanel(context, ref, ref.watch(recordItemListProvider),
-            stockItemListProvider);
+        transferItemDialogPanel(
+            context, ref, recordItemListProvider, stockItemListProvider, false);
       }
 
       addItemDialogPanel(
           context: context, createNew: createNew, pickItem: pickItem, ref: ref);
     }
 
-    void addReceiptToReceipt() {}
+    void createReceipt() {
+      ref.read(freezeAppBarProvider.notifier).state = true;
+      ref.read(openPanelProvider.notifier).state = true;
+
+      ref
+          .read(copiedStockItemListProvider.notifier)
+          .replaceList(ref.read(stockItemListProvider));
+      ref.read(broughtItemListProvider.notifier).clearList();
+    }
+
+    void addOnTab() {
+      if (pageIndex == 0) {
+        addItemToStock();
+      } else {
+        createReceipt();
+      }
+    }
 
     return AbsorbPointer(
       absorbing: freezeAppBar,
@@ -82,7 +95,7 @@ class Header extends ConsumerWidget {
               ),
               //this is a temporary solution
               IconButton(
-                onPressed: addItemToStock,
+                onPressed: addOnTab,
                 icon: Icon(
                   Icons.add_box,
                   size: 30,

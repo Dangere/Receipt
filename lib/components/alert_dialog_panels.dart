@@ -48,46 +48,74 @@ Future<String?> addItemDialogPanel(
 Future<String?> transferItemDialogPanel(
     BuildContext context,
     WidgetRef ref,
-    List<Item> from,
-    StateNotifierProvider<StockItemListNotifier, List<Item>> to) {
+    StateNotifierProvider<ItemListBaseNotifier, List<Item>> from,
+    StateNotifierProvider<ItemListBaseNotifier, List<Item>> to,
+    bool careAboutQuantity) {
   SelectedLanguage lang = ref.watch(selectedLanguageProvider);
   String title =
       lang == SelectedLanguage.arabic ? "اختار الغرض" : "Select Item";
 
+  String emptyString = lang == SelectedLanguage.arabic ? "فارغ" : "Empty";
   String cancelString = lang == SelectedLanguage.arabic ? "الغاء" : "Cancel";
+
+  List<Item> fromList = ref.read(from);
+
   return showDialog<String>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
       backgroundColor: Theme.of(context).colorScheme.background,
       title: Center(
-          child: Text(
-        title,
-        style: Theme.of(context).textTheme.titleMedium,
-      )),
+        child: Text(
+          title,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ),
       content: SizedBox(
         height: 300,
         width: 50,
         child: Container(
-          color: Colors.grey[400],
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(20),
+          ),
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 2.0),
-            child: ListView.builder(
-              itemCount: from.length,
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context, 'selected an item');
+            padding: const EdgeInsets.all(2.0),
+            child: Column(
+              children: [
+                if (fromList.isEmpty)
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        emptyString,
+                        style: Theme.of(context)
+                            .textTheme
+                            .titleLarge
+                            ?.copyWith(color: Colors.grey),
+                      ),
+                    ),
+                  )
+                else
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: fromList.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context, 'selected an item');
 
-                    selectedItemDialogPanel(
-                        context, ref, from[index], from, to);
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2.0),
-                    child:
-                        ItemCardMini(item: from[index], displayQuantity: true),
+                            selectedItemDialogPanel(context, ref,
+                                fromList[index], from, to, careAboutQuantity);
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: ItemCardMini(
+                                item: fromList[index], displayQuantity: true),
+                          ),
+                        );
+                      },
+                    ),
                   ),
-                );
-              },
+              ],
             ),
           ),
         ),
@@ -105,12 +133,12 @@ Future<String?> transferItemDialogPanel(
 }
 
 Future<String?> selectedItemDialogPanel(
-  BuildContext context,
-  WidgetRef ref,
-  Item item,
-  List<Item> from,
-  StateNotifierProvider<StockItemListNotifier, List<Item>> to,
-) {
+    BuildContext context,
+    WidgetRef ref,
+    Item item,
+    StateNotifierProvider<ItemListBaseNotifier, List<Item>> from,
+    StateNotifierProvider<ItemListBaseNotifier, List<Item>> to,
+    bool careAboutQuantity) {
   int quantity = 0;
 
   SelectedLanguage lang = ref.watch(selectedLanguageProvider);
@@ -119,6 +147,7 @@ Future<String?> selectedItemDialogPanel(
 
   String returnString = lang == SelectedLanguage.arabic ? "الرجوع" : "Return";
   String addString = lang == SelectedLanguage.arabic ? "اضف" : "Add";
+
   return showDialog<String>(
     context: context,
     builder: (BuildContext context) => AlertDialog(
@@ -135,14 +164,17 @@ Future<String?> selectedItemDialogPanel(
           builder: ((context, setState) {
             return Column(
               children: [
-                Container(
-                  color: Colors.grey[400],
-                  child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                      child: ItemCardMini(item: item, displayQuantity: true)),
+                Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2.0),
+                    child: ItemCardMini(item: item, displayQuantity: true)),
+                const SizedBox(
+                  height: 10,
                 ),
                 Container(
-                  color: const Color.fromRGBO(224, 224, 224, 1),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   child: SizedBox(
                     width: 120,
                     height: 40,
@@ -167,6 +199,11 @@ Future<String?> selectedItemDialogPanel(
                         IconButton(
                             onPressed: () {
                               setState(() {
+                                if (careAboutQuantity &&
+                                    quantity == item.quantity) {
+                                  return;
+                                }
+
                                 quantity++;
                               });
                             },
@@ -189,13 +226,17 @@ Future<String?> selectedItemDialogPanel(
 
             Item itemToAdd = Item.copyWithQuantity(item, quantity);
             ref.read(to.notifier).addItem(itemToAdd);
+
+            if (careAboutQuantity) {
+              ref.read(from.notifier).removeItem(itemToAdd);
+            }
           },
           child: Text(addString),
         ),
         TextButton(
           onPressed: () {
             Navigator.pop(context, 'Return');
-            transferItemDialogPanel(context, ref, from, to);
+            transferItemDialogPanel(context, ref, from, to, careAboutQuantity);
           },
           child: Text(returnString),
         ),
@@ -205,11 +246,12 @@ Future<String?> selectedItemDialogPanel(
 }
 
 Future<String?> changeQuantityDialogPanel(
-  BuildContext context,
-  WidgetRef ref,
-  Item item,
-  StateNotifierProvider<StockItemListNotifier, List<Item>> to,
-) {
+    BuildContext context,
+    WidgetRef ref,
+    Item item,
+    StateNotifierProvider<ItemListBaseNotifier, List<Item>> from,
+    StateNotifierProvider<ItemListBaseNotifier, List<Item>> to,
+    bool careAboutQuantity) {
   int quantity = item.quantity;
 
   SelectedLanguage lang = ref.watch(selectedLanguageProvider);
@@ -218,6 +260,10 @@ Future<String?> changeQuantityDialogPanel(
 
   String changeString = lang == SelectedLanguage.arabic ? "تغير" : "Change";
   String cancelString = lang == SelectedLanguage.arabic ? "الغاء" : "Cancel";
+
+  int fromItemQuantity = ref.read(from.notifier).getQuantity(item.id);
+  int toItemQuantity = ref.read(to.notifier).getQuantity(item.id);
+  int totalQuantity = fromItemQuantity + toItemQuantity;
 
   return showDialog<String>(
     context: context,
@@ -235,14 +281,17 @@ Future<String?> changeQuantityDialogPanel(
           builder: ((context, setState) {
             return Column(
               children: [
-                Container(
-                  color: Colors.grey[400],
-                  child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2.0),
-                      child: ItemCardMini(item: item, displayQuantity: true)),
+                Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 2.0),
+                    child: ItemCardMini(item: item, displayQuantity: true)),
+                const SizedBox(
+                  height: 10,
                 ),
                 Container(
-                  color: const Color.fromRGBO(224, 224, 224, 1),
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
                   child: SizedBox(
                     width: 120,
                     height: 40,
@@ -267,6 +316,8 @@ Future<String?> changeQuantityDialogPanel(
                         IconButton(
                           onPressed: () {
                             setState(() {
+                              if (careAboutQuantity &&
+                                  quantity == totalQuantity) return;
                               quantity++;
                             });
                           },
@@ -287,17 +338,39 @@ Future<String?> changeQuantityDialogPanel(
       actions: <Widget>[
         TextButton(
           onPressed: () {
-            if (quantity == 0) {
-              Navigator.pop(context, 'remove');
-              ref.read(to.notifier).removeItem(item);
+            if (!careAboutQuantity) {
+              Item changedItem = Item.copyWithQuantity(item, quantity);
+              ref.read(to.notifier).updateItem(changedItem);
+              Navigator.pop(context, 'change');
 
               return;
             }
 
-            Navigator.pop(context, 'Change');
+            // if (quantity == 0) {
+            //   Navigator.pop(context, 'remove');
+            //   ref.read(to.notifier).removeItem(item);
 
-            Item changedItem = Item.copyWithQuantity(item, quantity);
-            ref.read(to.notifier).updateItem(changedItem);
+            //   return;
+            // }
+
+            // Navigator.pop(context, 'Change');
+            Item fromItem = Item.copyWithQuantity(
+                item, fromItemQuantity + (item.quantity - quantity));
+            Item toItem = Item.copyWithQuantity(
+                item, toItemQuantity - (item.quantity - quantity));
+
+            if (fromItemQuantity == 0) {
+              ref.read(from.notifier).addItem(fromItem);
+            }
+
+            if (toItemQuantity == 0) {
+              ref.read(from.notifier).addItem(toItem);
+            }
+
+            ref.read(from.notifier).updateItem(fromItem);
+            ref.read(to.notifier).updateItem(toItem);
+
+            Navigator.pop(context, 'change');
           },
           child: Text(changeString),
         ),
