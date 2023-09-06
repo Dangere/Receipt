@@ -60,7 +60,7 @@ class ReceiptCard extends StatelessWidget {
                             height: 5,
                           ),
                           Text(
-                              "Purchased Items: ${receipt.broughtItems.length}",
+                              "Purchased Items: ${receipt.totalBroughtItems()}",
                               style: Theme.of(context).textTheme.bodySmall),
                         ],
                       ),

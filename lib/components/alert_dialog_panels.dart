@@ -346,14 +346,6 @@ Future<String?> changeQuantityDialogPanel(
               return;
             }
 
-            // if (quantity == 0) {
-            //   Navigator.pop(context, 'remove');
-            //   ref.read(to.notifier).removeItem(item);
-
-            //   return;
-            // }
-
-            // Navigator.pop(context, 'Change');
             Item fromItem = Item.copyWithQuantity(
                 item, fromItemQuantity + (item.quantity - quantity));
             Item toItem = Item.copyWithQuantity(

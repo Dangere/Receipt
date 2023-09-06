@@ -49,10 +49,23 @@ class Receipt {
   final String customerName;
   final List<Item> broughtItems;
   final String creationDate;
+  int generatedId = 0;
 
   Receipt({
     required this.customerName,
     required this.broughtItems,
     required this.creationDate,
-  });
+  }) {
+    generatedId = DateTime.now().millisecondsSinceEpoch;
+  }
+
+  int totalBroughtItems() {
+    int count = 0;
+
+    for (int i = 0; i < broughtItems.length; i++) {
+      count += broughtItems[i].quantity;
+    }
+
+    return count;
+  }
 }

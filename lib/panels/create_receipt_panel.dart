@@ -8,7 +8,9 @@ import '../models.dart';
 import '../providers.dart';
 
 class CreateReceiptPanel extends ConsumerWidget {
-  const CreateReceiptPanel({super.key});
+  CreateReceiptPanel({super.key});
+
+  final TextEditingController customerNameController = TextEditingController();
 
   @override
   Widget build(BuildContext context, ref) {
@@ -22,9 +24,6 @@ class CreateReceiptPanel extends ConsumerWidget {
 
     final String emptyString = onArabic ? "فارغ" : "Empty";
 
-    final TextEditingController customerNameController =
-        TextEditingController();
-
     void closePanel() {
       ref.read(openPanelProvider.notifier).state = false;
       ref.read(freezeAppBarProvider.notifier).state = false;
@@ -32,6 +31,26 @@ class CreateReceiptPanel extends ConsumerWidget {
     }
 
     List<Item> broughtItems = ref.watch(broughtItemListProvider);
+
+    print("added item rn");
+
+    void createReceipt() {
+      if (broughtItems.isEmpty || customerNameController.text.isEmpty) return;
+      print("create receipt and save it");
+
+      //make dialog alert to confirm making the receipt because it cant be changed
+
+      Receipt newReceipt = Receipt(
+          customerName: customerNameController.text,
+          broughtItems: broughtItems,
+          creationDate: "2023/8/30");
+      ref.read(receiptListProvider.notifier).addReceipt(newReceipt);
+
+      ref
+          .read(stockItemListProvider.notifier)
+          .replaceList(ref.watch(copiedStockItemListProvider));
+      closePanel();
+    }
 
     return SizedBox(
       height: 500,
@@ -52,6 +71,7 @@ class CreateReceiptPanel extends ConsumerWidget {
             padding: const EdgeInsets.all(15.0),
             child: Column(
               children: [
+                //close panel
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -75,6 +95,7 @@ class CreateReceiptPanel extends ConsumerWidget {
                 const SizedBox(
                   height: 20,
                 ),
+                //customer's name input field
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12.0),
                   child: Container(
@@ -83,18 +104,21 @@ class CreateReceiptPanel extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: TextField(
-                        textAlign: TextAlign.center,
-                        decoration: InputDecoration(
-                          hintText: customerNameText,
-                          hintStyle: const TextStyle(),
-                          border: InputBorder.none,
-                        ),
-                        controller: customerNameController),
+                      textAlign: TextAlign.center,
+                      decoration: InputDecoration(
+                        hintText: customerNameText,
+                        hintStyle: const TextStyle(),
+                        border: InputBorder.none,
+                      ),
+                      controller: customerNameController,
+                      onChanged: (value) => "",
+                    ),
                   ),
                 ),
                 const SizedBox(
                   height: 20,
                 ),
+                //purchased items list view
                 Expanded(
                     child: Container(
                   decoration: BoxDecoration(
@@ -150,16 +174,18 @@ class CreateReceiptPanel extends ConsumerWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
+                    //final create receipt button
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                          color: broughtItems.isEmpty
+                          color: !(broughtItems.isEmpty ||
+                                  customerNameController.text.isEmpty)
                               ? const Color.fromARGB(255, 20, 16, 26)
-                                  .withOpacity(0.5)
-                              : const Color.fromARGB(255, 20, 16, 26),
+                              : const Color.fromARGB(255, 20, 16, 26)
+                                  .withOpacity(0.5),
                           borderRadius: BorderRadius.circular(12)),
                       child: TextButton(
-                        onPressed: () => "",
+                        onPressed: () => createReceipt(),
                         child: Text(
                           createReceiptText,
                           style: const TextStyle(
@@ -167,6 +193,7 @@ class CreateReceiptPanel extends ConsumerWidget {
                         ),
                       ),
                     ),
+                    //add item to the purchased items
                     Container(
                       padding: const EdgeInsets.all(8),
                       child: TextButton(

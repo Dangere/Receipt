@@ -14,6 +14,20 @@ final selectedLanguageProvider =
 
 enum SelectedLanguage { arabic, english }
 
+final displayLanguageOptionsProvider = StateProvider<bool>((ref) => false);
+
+class ReceiptListNotifier extends StateNotifier<List<Receipt>> {
+  ReceiptListNotifier(super.state);
+
+  void addReceipt(Receipt receipt) {
+    state = [...state, receipt];
+  }
+}
+
+final receiptListProvider =
+    StateNotifierProvider<ReceiptListNotifier, List<Receipt>>(
+        (ref) => ReceiptListNotifier([]));
+
 class ItemListBaseNotifier extends StateNotifier<List<Item>> {
   ItemListBaseNotifier(super.state);
 
@@ -97,8 +111,6 @@ class ItemListBaseNotifier extends StateNotifier<List<Item>> {
     return 0;
   }
 }
-
-final displayLanguageOptionsProvider = StateProvider<bool>((ref) => false);
 
 class StockItemListNotifier extends ItemListBaseNotifier {
   StockItemListNotifier() : super([]);
